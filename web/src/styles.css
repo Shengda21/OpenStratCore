@@ -1,0 +1,4 @@
+:root { color-scheme: dark; }
+body { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; background: #10141a; color: #cdd3da; }
+#root { padding: 16px; }
+.hint { opacity: 0.7; font-size: 13px; }

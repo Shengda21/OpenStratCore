@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openstratcore/schemas/map.schema.json",
+  "title": "Map",
+  "description": "Static terrain. Hex grid in axial coordinates (q,r). Elevation is relative-to-lowest in units; terrain features and roads per the ruleset.",
+  "type": "object",
+  "required": ["format", "version", "name", "elevationUnitMeters", "hexes"],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "openstratcore.map" },
+    "version": { "type": "integer", "minimum": 1 },
+    "name": { "type": "string" },
+    "elevationUnitMeters": {
+      "type": "integer",
+      "description": "Meters per elevation unit (the ruleset uses 5/10/20).",
+      "enum": [5, 10, 20]
+    },
+    "bounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "qMin": { "type": "integer" }, "qMax": { "type": "integer" },
+        "rMin": { "type": "integer" }, "rMax": { "type": "integer" }
+      }
+    },
+    "hexes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/hex" }
+    }
+  },
+  "$defs": {
+    "hex": {
+      "type": "object",
+      "required": ["q", "r", "elevation", "terrain"],
+      "additionalProperties": false,
+      "properties": {
+        "q": { "type": "integer" },
+        "r": { "type": "integer" },
+        "id": { "type": "string", "description": "Optional display label, e.g. the 4-digit offset id like '9032'." },
+        "elevation": { "type": "integer", "minimum": 0, "description": "Relative height in elevationUnit(s)." },
+        "terrain": {
+          "type": "string",
+          "enum": ["open", "urban", "forest", "river", "river_large", "lake", "soft", "road", "rail"],
+          "description": "open=旷野, urban=居民地, forest=丛林地, river=小河流, river_large=大河流, lake=湖泊, soft=松软地, road=公路, rail=铁路 (三.1.2)"
+        },
+        "road": {
+          "type": "object",
+          "description": "Optional road/rail line through the hex.",
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "type": "string", "enum": ["country", "normal", "grade", "rail"], "description": "乡村路/一般公路/等级公路/铁路" },
+            "connects": {
+              "type": "array",
+              "description": "Hex edge directions (0-5) the road exits toward.",
+              "items": { "type": "integer", "minimum": 0, "maximum": 5 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

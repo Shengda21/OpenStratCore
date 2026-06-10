@@ -1,0 +1,410 @@
+{
+  "format": "openstratcore.map",
+  "version": 1,
+  "name": "空中突击",
+  "elevationUnitMeters": 10,
+  "bounds": {
+    "qMin": 0,
+    "qMax": 10,
+    "rMin": 0,
+    "rMax": 5
+  },
+  "hexes": [
+    {
+      "q": 0,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 0,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 0,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 0,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 0,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 0,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 1,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 1,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 1,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 1,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 1,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "soft"
+    },
+    {
+      "q": 1,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 2,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 2,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 2,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 2,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 2,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "soft"
+    },
+    {
+      "q": 2,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 3,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 3,
+      "r": 1,
+      "elevation": 0,
+      "terrain": "river"
+    },
+    {
+      "q": 3,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "river"
+    },
+    {
+      "q": 3,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "river"
+    },
+    {
+      "q": 3,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "river"
+    },
+    {
+      "q": 3,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 4,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 4,
+      "r": 1,
+      "elevation": 0,
+      "terrain": "river"
+    },
+    {
+      "q": 4,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "river_large"
+    },
+    {
+      "q": 4,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "river_large"
+    },
+    {
+      "q": 4,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "river"
+    },
+    {
+      "q": 4,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 5,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 5,
+      "r": 1,
+      "elevation": 0,
+      "terrain": "river"
+    },
+    {
+      "q": 5,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "river"
+    },
+    {
+      "q": 5,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "river"
+    },
+    {
+      "q": 5,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "river"
+    },
+    {
+      "q": 5,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 6,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 6,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 6,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 6,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 6,
+      "r": 4,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 6,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 7,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 7,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 7,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 7,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 7,
+      "r": 4,
+      "elevation": 1,
+      "terrain": "urban"
+    },
+    {
+      "q": 7,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 8,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 8,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 8,
+      "r": 2,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 8,
+      "r": 3,
+      "elevation": 1,
+      "terrain": "urban"
+    },
+    {
+      "q": 8,
+      "r": 4,
+      "elevation": 1,
+      "terrain": "urban"
+    },
+    {
+      "q": 8,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 9,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 9,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 9,
+      "r": 2,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 9,
+      "r": 3,
+      "elevation": 1,
+      "terrain": "urban"
+    },
+    {
+      "q": 9,
+      "r": 4,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 9,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 10,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 10,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 10,
+      "r": 2,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 10,
+      "r": 3,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 10,
+      "r": 4,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 10,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "id": "vehicle_loss_correction",
+  "title_zh": "车辆战损结果修正",
+  "source": {
+    "page": 15,
+    "appendix": "附1.6"
+  },
+  "verified": true,
+  "dice": "2d6",
+  "additive_random": {
+    "shooter": {
+      "被压制": -1,
+      "机动中": -1,
+      "水上坦克": -1
+    },
+    "target_terrain": {
+      "居民地/工事": -1,
+      "丛林地": -2,
+      "水上": -2
+    },
+    "target_state": {
+      "掩蔽中": -2,
+      "机动中": -2,
+      "堆叠中": 2,
+      "行军中": 4
+    }
+  },
+  "armor_order": [
+    "复合装甲",
+    "重型装甲",
+    "中型装甲",
+    "轻型装甲",
+    "无装甲"
+  ],
+  "by_modified_random": {
+    "<=-3": [
+      -3,
+      -3,
+      -2,
+      -1,
+      null
+    ],
+    "-2..-1": [
+      -3,
+      -2,
+      -1,
+      null,
+      null
+    ],
+    "0": [
+      -3,
+      -1,
+      null,
+      null,
+      null
+    ],
+    "1": [
+      -2,
+      -1,
+      null,
+      null,
+      null
+    ],
+    "2": [
+      -2,
+      null,
+      null,
+      null,
+      null
+    ],
+    "3..5": [
+      -1,
+      null,
+      null,
+      null,
+      1
+    ],
+    "6..8": [
+      null,
+      null,
+      null,
+      1,
+      1
+    ],
+    "9": [
+      null,
+      null,
+      1,
+      1,
+      1
+    ],
+    "10": [
+      null,
+      1,
+      1,
+      2,
+      2
+    ],
+    "11": [
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    ">=12": [
+      2,
+      2,
+      3,
+      3,
+      3
+    ]
+  },
+  "hex_size_meters": 200
+}

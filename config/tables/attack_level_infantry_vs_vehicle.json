@@ -1,0 +1,34 @@
+{
+  "id": "attack_level_infantry_vs_vehicle",
+  "title_zh": "步兵轻武器对车辆攻击等级表",
+  "source": {
+    "page": 14,
+    "appendix": "附1.3"
+  },
+  "verified": true,
+  "range": 3,
+  "by_squad": {
+    "1": [
+      2,
+      1
+    ],
+    "2": [
+      4,
+      2,
+      1
+    ],
+    "3": [
+      6,
+      4,
+      2,
+      1
+    ],
+    "4": [
+      8,
+      5,
+      3,
+      1
+    ]
+  },
+  "hex_size_meters": 200
+}

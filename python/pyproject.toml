@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openstratcore-env"
+version = "0.1.0"
+description = "PettingZoo env + RL/LLM harness for the openstratcore wargame engine"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+dependencies = ["numpy>=1.26", "gymnasium>=0.29"]
+
+[project.optional-dependencies]
+rl = ["torch>=2.2", "pettingzoo>=1.24"]
+llm = ["anthropic>=0.40", "openai>=1.40"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["openstratcore_env", "prob_learning"]
+
+# NOTE: the Rust engine extension (`openstratcore_core`) is built separately with maturin:
+#   maturin develop -m ../crates/openstratcore-py/Cargo.toml
+# The pure-Python `mock` backend needs no Rust build and runs the self-play example out of the box.

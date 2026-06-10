@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openstratcore/schemas/scenario.schema.json",
+  "title": "Scenario",
+  "description": "Mutable setup over a map: forces, placement, objectives, victory, time limit, preset facilities.",
+  "type": "object",
+  "required": ["format", "version", "name", "map", "sides"],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "openstratcore.scenario" },
+    "version": { "type": "integer", "minimum": 1 },
+    "name": { "type": "string" },
+    "map": { "type": "string", "description": "Map filename, relative to scenarios/maps/." },
+    "rules": { "type": "string", "description": "Optional rules config filename (defaults to config/rules.default.json)." },
+    "timeLimitSeconds": { "type": "integer", "minimum": 1 },
+    "sides": {
+      "type": "object",
+      "required": ["red", "blue"],
+      "additionalProperties": false,
+      "properties": {
+        "red": { "$ref": "#/$defs/side" },
+        "blue": { "$ref": "#/$defs/side" }
+      }
+    },
+    "objectives": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/controlPoint" }
+    },
+    "victory": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "type": "string", "enum": ["capture_all", "capture_count", "annihilation", "time"] },
+        "captureCount": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "facilities": {
+      "type": "array",
+      "description": "Preset facilities (设施): minefields, roadblocks, works, indirect-fire zones.",
+      "items": { "$ref": "#/$defs/facility" }
+    }
+  },
+  "$defs": {
+    "side": {
+      "type": "object",
+      "required": ["name", "units"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "units": { "type": "array", "items": { "$ref": "#/$defs/unit" } }
+      }
+    },
+    "unit": {
+      "type": "object",
+      "required": ["id", "type", "at"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": ["tank", "ifv", "infantry", "artillery", "uav", "attack_heli", "transport_heli",
+                   "loitering_munition", "recon_vehicle", "radar_vehicle", "minelayer", "minesweeper",
+                   "aa_gun", "aa_missile_squad", "aa_missile_vehicle", "ugv", "pickup", "space_recon"]
+        },
+        "armor": { "type": "string", "enum": ["composite", "heavy", "medium", "light", "none"] },
+        "teams": { "type": "integer", "minimum": 1, "maximum": 4, "description": "班/车数。" },
+        "at": { "$ref": "#/$defs/axial" },
+        "facing": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "state": { "type": "string", "enum": ["normal", "moving", "stopped", "cover", "march", "suppressed"], "description": "Initial posture. 半速/一二级冲锋 are NOT here — they are per-move speeds (move_to mode:…), rejected at load if used as a starting state." },
+        "carriedBy": { "type": "string", "description": "Vehicle/heli unit id if mounted at start." },
+        "affiliatedTo": { "type": "string", "description": "三.13b: for a 无人战车 (ugv), the id of its 隶属 manned vehicle. The engine requires it to name one same-side manned vehicle; the UGV may guide only it (三.14b) and is annihilated with it (三.13d)." }
+      },
+      "allOf": [
+        {
+          "comment": "三.13b: a 无人战车 must declare its 隶属 manned vehicle.",
+          "if": { "properties": { "type": { "const": "ugv" } }, "required": ["type"] },
+          "then": { "required": ["affiliatedTo"] }
+        }
+      ]
+    },
+    "axial": {
+      "type": "object",
+      "required": ["q", "r"],
+      "additionalProperties": false,
+      "properties": { "q": { "type": "integer" }, "r": { "type": "integer" } }
+    },
+    "controlPoint": {
+      "type": "object",
+      "required": ["id", "at"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "at": { "$ref": "#/$defs/axial" },
+        "owner": { "type": "string", "enum": ["red", "blue", "neutral"], "default": "neutral" },
+        "priority": { "type": "string", "enum": ["primary", "secondary"], "description": "主要/次要" }
+      }
+    },
+    "facility": {
+      "type": "object",
+      "required": ["kind", "at"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string", "enum": ["minefield", "roadblock", "works_vehicle", "works_infantry_combat", "works_infantry_hidden", "indirect_zone"] },
+        "at": { "$ref": "#/$defs/axial" },
+        "owner": { "type": "string", "enum": ["red", "blue", "neutral"] },
+        "armor": { "type": "string", "enum": ["heavy", "medium"], "description": "工事防护：重型(野战)/中型(简易)" },
+        "capacity": { "type": "integer", "minimum": 1, "maximum": 5 }
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openstratcore/schemas/telemetry.schema.json",
+  "title": "Combat Outcome Telemetry",
+  "description": "Observational, ADMIN/OFFLINE-only direct-fire adjudication records produced by Engine.enable_outcome_log / drain_outcome_log (PyO3: same names). For balance analysis (A2): the records are NEVER read back into the simulation, so telemetry cannot affect determinism (硬规则 #1). Each record carries no side/unit/position — only the result-table, weapon, effective attack level, target armour class, distance, and outcome of a fire that already occurred — so it cannot leak the location of un-observed units (硬规则 #5). tools/balance_report.py consumes a JSON-array of these; runs/outcomes.jsonl stores one record per line.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/outcomeRecord" },
+  "$defs": {
+    "outcomeRecord": {
+      "type": "object",
+      "required": ["table", "weapon", "attackLevel", "armor", "distance", "outcome"],
+      "additionalProperties": false,
+      "properties": {
+        "table": {
+          "type": "string",
+          "description": "Result-table id this adjudication corresponds to (analysis correspondence to the prob providers).",
+          "enum": ["direct_vs_vehicle", "direct_vs_personnel"]
+        },
+        "weapon": {
+          "type": "string",
+          "description": "Firing weapon id (matches config weapon names, e.g. 大号直瞄炮 / 速射炮 / 步兵轻武器)."
+        },
+        "attackLevel": {
+          "type": "integer",
+          "description": "Effective attack level AFTER pre-draw corrections (高差/车数), as the result table saw it."
+        },
+        "armor": {
+          "type": "string",
+          "description": "Target armour class label; 'none' for personnel (no armour class).",
+          "enum": ["composite", "heavy", "medium", "light", "none"]
+        },
+        "distance": {
+          "type": "integer",
+          "description": "Firing distance in hexes."
+        },
+        "outcome": {
+          "type": "string",
+          "description": "Adjudicated result: 'destroyed:n' (n teams/vehicles destroyed), 'suppress', 'noeffect', or 'kill' (annihilate).",
+          "pattern": "^(destroyed:[0-9]+|suppress|noeffect|kill)$"
+        }
+      }
+    }
+  }
+}

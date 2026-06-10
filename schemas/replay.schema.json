@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openstratcore/schemas/replay.schema.json",
+  "title": "Replay",
+  "description": "Canonical replay = header + ordered command stream (re-run with header.seed to reproduce). Optional periodic snapshots let the viewer seek without full replay.",
+  "type": "object",
+  "required": ["header", "commands"],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "type": "object",
+      "required": ["format", "version", "redName", "blueName", "mapFile", "scenarioFile", "seed"],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "const": "openstratcore.replay" },
+        "version": { "type": "integer", "minimum": 1 },
+        "redName": { "type": "string" },
+        "blueName": { "type": "string" },
+        "mapFile": { "type": "string" },
+        "scenarioFile": { "type": "string" },
+        "rulesFile": { "type": "string" },
+        "seed": { "type": "integer" },
+        "engineVersion": { "type": "string" },
+        "rulesVersion": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "durationSeconds": { "type": "number" },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "winner": { "type": "string", "enum": ["red", "blue", "draw"] },
+            "reason": { "type": "string" }
+          }
+        }
+      }
+    },
+    "commands": {
+      "type": "array",
+      "description": "Time-ordered orders as submitted. Replaying these on a fresh engine with header.seed reproduces the match exactly.",
+      "items": {
+        "type": "object",
+        "required": ["t", "side", "command"],
+        "additionalProperties": false,
+        "properties": {
+          "t": { "type": "number", "description": "Simulation time (seconds) the command was submitted." },
+          "side": { "type": "string", "enum": ["red", "blue"] },
+          "command": { "type": "object", "description": "A command object matching llm_tools.schema.json action shapes." }
+        }
+      }
+    },
+    "snapshots": {
+      "type": "array",
+      "description": "Optional. Periodic full state for fast seeking in the viewer. Not required to reproduce the match.",
+      "items": {
+        "type": "object",
+        "required": ["t", "state"],
+        "additionalProperties": false,
+        "properties": {
+          "t": { "type": "number" },
+          "state": { "type": "object", "description": "Opaque engine state for rendering." }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "Optional human-readable adjudication log (fire results, transitions, captures).",
+      "items": {
+        "type": "object",
+        "required": ["t", "kind"],
+        "properties": { "t": { "type": "number" }, "kind": { "type": "string" } }
+      }
+    }
+  }
+}

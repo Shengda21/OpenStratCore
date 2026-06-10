@@ -1,0 +1,630 @@
+{
+  "format": "openstratcore.map",
+  "version": 1,
+  "name": "合成营对决",
+  "elevationUnitMeters": 10,
+  "bounds": {
+    "qMin": 0,
+    "qMax": 12,
+    "rMin": 0,
+    "rMax": 6
+  },
+  "hexes": [
+    {
+      "q": 0,
+      "r": 0,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 0,
+      "r": 1,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 0,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 0,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 0,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 0,
+      "r": 5,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 0,
+      "r": 6,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 1,
+      "r": 0,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 1,
+      "r": 1,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 1,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 1,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 1,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 1,
+      "r": 5,
+      "elevation": 0,
+      "terrain": "soft"
+    },
+    {
+      "q": 1,
+      "r": 6,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 2,
+      "r": 0,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 2,
+      "r": 1,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 2,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 2,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "road",
+      "road": {
+        "kind": "normal",
+        "connects": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "q": 2,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 2,
+      "r": 5,
+      "elevation": 0,
+      "terrain": "soft"
+    },
+    {
+      "q": 2,
+      "r": 6,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 3,
+      "r": 0,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 3,
+      "r": 1,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 3,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "forest"
+    },
+    {
+      "q": 3,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "road",
+      "road": {
+        "kind": "normal",
+        "connects": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "q": 3,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "forest"
+    },
+    {
+      "q": 3,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 3,
+      "r": 6,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 4,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 4,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 4,
+      "r": 2,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 4,
+      "r": 3,
+      "elevation": 1,
+      "terrain": "road",
+      "road": {
+        "kind": "normal",
+        "connects": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "q": 4,
+      "r": 4,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 4,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 4,
+      "r": 6,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 5,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 5,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 5,
+      "r": 2,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 5,
+      "r": 3,
+      "elevation": 1,
+      "terrain": "road",
+      "road": {
+        "kind": "normal",
+        "connects": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "q": 5,
+      "r": 4,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 5,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 5,
+      "r": 6,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 6,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 6,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 6,
+      "r": 2,
+      "elevation": 2,
+      "terrain": "urban"
+    },
+    {
+      "q": 6,
+      "r": 3,
+      "elevation": 1,
+      "terrain": "road",
+      "road": {
+        "kind": "normal",
+        "connects": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "q": 6,
+      "r": 4,
+      "elevation": 1,
+      "terrain": "urban"
+    },
+    {
+      "q": 6,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 6,
+      "r": 6,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 7,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 7,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 7,
+      "r": 2,
+      "elevation": 2,
+      "terrain": "urban"
+    },
+    {
+      "q": 7,
+      "r": 3,
+      "elevation": 1,
+      "terrain": "road",
+      "road": {
+        "kind": "normal",
+        "connects": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "q": 7,
+      "r": 4,
+      "elevation": 1,
+      "terrain": "urban"
+    },
+    {
+      "q": 7,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 7,
+      "r": 6,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 8,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 8,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 8,
+      "r": 2,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 8,
+      "r": 3,
+      "elevation": 1,
+      "terrain": "road",
+      "road": {
+        "kind": "normal",
+        "connects": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "q": 8,
+      "r": 4,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 8,
+      "r": 5,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 8,
+      "r": 6,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 9,
+      "r": 0,
+      "elevation": 1,
+      "terrain": "open"
+    },
+    {
+      "q": 9,
+      "r": 1,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 9,
+      "r": 2,
+      "elevation": 1,
+      "terrain": "forest"
+    },
+    {
+      "q": 9,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "road",
+      "road": {
+        "kind": "normal",
+        "connects": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "q": 9,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "forest"
+    },
+    {
+      "q": 9,
+      "r": 5,
+      "elevation": 0,
+      "terrain": "forest"
+    },
+    {
+      "q": 9,
+      "r": 6,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 10,
+      "r": 0,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 10,
+      "r": 1,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 10,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 10,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "road",
+      "road": {
+        "kind": "normal",
+        "connects": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "q": 10,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 10,
+      "r": 5,
+      "elevation": 0,
+      "terrain": "soft"
+    },
+    {
+      "q": 10,
+      "r": 6,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 11,
+      "r": 0,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 11,
+      "r": 1,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 11,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 11,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "road",
+      "road": {
+        "kind": "normal",
+        "connects": [
+          0,
+          3
+        ]
+      }
+    },
+    {
+      "q": 11,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 11,
+      "r": 5,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 11,
+      "r": 6,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 12,
+      "r": 0,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 12,
+      "r": 1,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 12,
+      "r": 2,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 12,
+      "r": 3,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 12,
+      "r": 4,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 12,
+      "r": 5,
+      "elevation": 0,
+      "terrain": "open"
+    },
+    {
+      "q": 12,
+      "r": 6,
+      "elevation": 0,
+      "terrain": "open"
+    }
+  ]
+}

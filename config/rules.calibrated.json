@@ -1,0 +1,526 @@
+{
+  "format": "openstratcore.rules",
+  "version": 1,
+  "hex_size_meters": 200,
+  "timing": {
+    "decision_tick_seconds": 5,
+    "move_to_stop": 75,
+    "weapon_lock": 75,
+    "weapon_deploy": 75,
+    "weapon_cooldown_direct": 75,
+    "cover_transition": 75,
+    "move_state_transition": 75,
+    "mount_dismount": 75,
+    "aggregate_split": 75,
+    "fortification_transition": 75,
+    "minefield_lay": 75,
+    "suppress_duration": 150,
+    "indirect_fly": 150,
+    "indirect_boom": 300,
+    "indirect_cooldown": 300,
+    "loitering_endurance": 1200,
+    "loitering_launch": 75,
+    "radar_spinup": 75,
+    "heli_altitude_switch": 75,
+    "same_hex_engage_interval": 25
+  },
+  "movement": {
+    "base_speed_sec_per_hex": {
+      "tank": 20,
+      "ifv": 20,
+      "artillery": 20,
+      "recon_vehicle": 20,
+      "ugv": 20,
+      "infantry": 144,
+      "uav": 8,
+      "loitering_munition": 8,
+      "attack_heli": 4,
+      "transport_heli": 4,
+      "aa_gun": 20,
+      "aa_missile_squad": 144,
+      "aa_missile_vehicle": 20,
+      "pickup": 16,
+      "minelayer": 20,
+      "minesweeper": 20
+    },
+    "terrain_speed_factor": {
+      "forest": 2.0,
+      "urban": 3.0,
+      "river": 2.0,
+      "river_large": 4.0,
+      "soft": 4.0,
+      "lake": 4.0
+    },
+    "slope_rule": {
+      "impassable_above_level": 5,
+      "factor_per_level": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "infantry_highdiff_meters_halfspeed": 60,
+    "infantry_charge": {
+      "charge1": {
+        "speed_mult": 2,
+        "fatigue_per_hex": 1
+      },
+      "charge2": {
+        "speed_mult": 4,
+        "fatigue_per_hex": 1
+      }
+    },
+    "infantry_fatigue_decay_seconds": 75,
+    "march_speed_kmh": {
+      "country": 40,
+      "normal": 60,
+      "grade": 90
+    }
+  },
+  "observation": {
+    "infantry": {
+      "infantry": 10,
+      "vehicle": 25,
+      "attack_heli": 25,
+      "uav": "adjacent",
+      "loitering_munition": "adjacent"
+    },
+    "vehicle": {
+      "infantry": 10,
+      "vehicle": 25,
+      "attack_heli": 25,
+      "uav": "adjacent",
+      "loitering_munition": "adjacent"
+    },
+    "attack_heli": {
+      "infantry": 10,
+      "vehicle": 25,
+      "attack_heli": 25,
+      "uav": "adjacent",
+      "loitering_munition": "adjacent"
+    },
+    "uav": {
+      "infantry": 2,
+      "vehicle": 2
+    },
+    "loitering_munition": {
+      "infantry": 2,
+      "vehicle": 2
+    },
+    "recon_vehicle": {
+      "infantry": 20,
+      "vehicle": 50,
+      "attack_heli": 25,
+      "uav": "adjacent",
+      "loitering_munition": "adjacent"
+    },
+    "aa_missile_squad": {
+      "infantry": 10,
+      "vehicle": 25,
+      "attack_heli": 50,
+      "uav": 25
+    },
+    "aa_missile_vehicle": {
+      "infantry": 10,
+      "vehicle": 25,
+      "attack_heli": 50,
+      "uav": 25
+    }
+  },
+  "control": {
+    "stacking_max_ground_units_per_hex": 4,
+    "capture_no_enemy_radius_hexes": 1,
+    "max_squads_per_unit": 4
+  },
+  "fortification": {
+    "capacity_squads": 5,
+    "exposed_range_hexes": 12
+  },
+  "minefield": {
+    "lay_range_hexes": 50,
+    "max_lays_per_vehicle": 3,
+    "observe_range_hexes": 10
+  },
+  "air": {
+    "recon_altitude_meters": 200,
+    "heli_altitude_meters": {
+      "high": 500,
+      "low": 200,
+      "very_low": 20
+    },
+    "heli_capacity_squads": 4,
+    "aa": {
+      "aa_gun": {
+        "weapon": "防空高炮",
+        "interval": 15,
+        "max_shots": 10
+      },
+      "aa_missile_squad": {
+        "weapon": "便携防空导弹",
+        "interval": 75,
+        "max_shots": 4
+      },
+      "aa_missile_vehicle": {
+        "weapon": "车载防空导弹",
+        "interval": 15,
+        "max_shots": 4
+      }
+    }
+  },
+  "loadout": {
+    "tank": [
+      "大号直瞄炮"
+    ],
+    "ifv": [
+      "速射炮"
+    ],
+    "infantry": [
+      "步兵轻武器"
+    ],
+    "recon_vehicle": [
+      "速射炮"
+    ],
+    "ugv": [
+      "速射炮"
+    ],
+    "aa_gun": [
+      "速射炮"
+    ],
+    "aa_missile_vehicle": [
+      "车载导弹_炮射导弹"
+    ],
+    "aa_missile_squad": [
+      "便携导弹"
+    ],
+    "minelayer": [
+      "步兵轻武器"
+    ],
+    "minesweeper": [
+      "步兵轻武器"
+    ],
+    "artillery": [
+      "步兵轻武器"
+    ],
+    "pickup": [
+      "步兵轻武器"
+    ],
+    "loitering_munition": [
+      "巡飞弹"
+    ]
+  },
+  "weapons": {
+    "tank_main_big": {
+      "kind": "direct",
+      "range": 18,
+      "moving_fire": true,
+      "resultTable": "direct_vs_vehicle",
+      "attackLevelByDistance": [
+        10,
+        10,
+        10,
+        10,
+        10,
+        9,
+        9,
+        9,
+        9,
+        8,
+        8,
+        8,
+        7,
+        7,
+        6,
+        5,
+        4,
+        3,
+        2
+      ]
+    },
+    "tank_main_medium": {
+      "kind": "direct",
+      "range": 15,
+      "moving_fire": true,
+      "resultTable": "direct_vs_vehicle",
+      "attackLevelByDistance": [
+        10,
+        10,
+        10,
+        10,
+        9,
+        9,
+        9,
+        8,
+        8,
+        7,
+        7,
+        6,
+        5,
+        5,
+        2,
+        2
+      ]
+    },
+    "infantry_small_arms": {
+      "kind": "small_arms",
+      "range": 3,
+      "resultTable": "small_arms_vs_vehicle",
+      "attackLevelByDistance": [
+        [
+          2,
+          1
+        ],
+        [
+          4,
+          2,
+          1
+        ],
+        [
+          6,
+          4,
+          2,
+          1
+        ],
+        [
+          8,
+          5,
+          3,
+          1
+        ]
+      ]
+    }
+  },
+  "combatResultTables": {
+    "direct_vs_vehicle": {
+      "randomDice": 2,
+      "cells": {
+        "6": {
+          "2": "S",
+          "3": "S",
+          "4": "1",
+          "5": "1",
+          "6": "1",
+          "7": "1",
+          "8": "1",
+          "9": "2",
+          "10": "2",
+          "11": "2",
+          "12": "3"
+        },
+        "8": {
+          "2": "S",
+          "3": "1",
+          "4": "1",
+          "5": "1",
+          "6": "1",
+          "7": "2",
+          "8": "2",
+          "9": "2",
+          "10": "3",
+          "11": "3",
+          "12": "3"
+        },
+        "10": {
+          "2": "1",
+          "3": "1",
+          "4": "1",
+          "5": "2",
+          "6": "2",
+          "7": "2",
+          "8": "3",
+          "9": "3",
+          "10": "3",
+          "11": "4",
+          "12": "4"
+        }
+      }
+    },
+    "direct_vs_personnel": {
+      "randomDice": 2,
+      "cells": {
+        "5": {
+          "2": "S",
+          "3": "S",
+          "4": "S",
+          "5": "1",
+          "6": "1",
+          "7": "1",
+          "8": "1",
+          "9": "1",
+          "10": "1",
+          "11": "1",
+          "12": "1"
+        },
+        "8": {
+          "2": "S",
+          "3": "S",
+          "4": "S",
+          "5": "S",
+          "6": "1",
+          "7": "1",
+          "8": "1",
+          "9": "1",
+          "10": "1",
+          "11": "1",
+          "12": "1"
+        }
+      }
+    },
+    "small_arms_vs_vehicle": {
+      "randomDice": 2,
+      "cells": {
+        "1": {
+          "2": "S",
+          "3": "S",
+          "4": "S",
+          "5": "S",
+          "6": "1",
+          "7": "1",
+          "8": "1",
+          "9": "1",
+          "10": "1",
+          "11": "1",
+          "12": "1"
+        }
+      }
+    }
+  },
+  "modifiers": {
+    "_doc": "Subset — illustrative numbers; fill the full decision tables (附1.4 高度差修正, 1.6 车辆战损修正) via /add-rule.",
+    "heightDiffByDistance": {
+      "1": {
+        "1": -2,
+        "2": -2,
+        "3": -1,
+        "4": -1,
+        "5": -1
+      },
+      "3": {
+        "1": -3,
+        "2": -2,
+        "3": -1,
+        "4": -1,
+        "5": -1
+      }
+    },
+    "vehicleResult": {
+      "shooterState": {
+        "suppressed": -1,
+        "moving": -1,
+        "water_tank": -1
+      },
+      "targetTerrain": {
+        "urban": -1,
+        "forest": -2,
+        "water": -2
+      },
+      "targetState": {
+        "cover": -2,
+        "moving": -2,
+        "stacked": 2,
+        "march": 4
+      }
+    },
+    "personnelResult": {
+      "shooterState": {
+        "suppressed": -1,
+        "moving": -1
+      },
+      "targetTerrain": {
+        "urban": -1,
+        "forest": -2,
+        "works": -1
+      },
+      "targetState": {
+        "cover": -2,
+        "moving": -2,
+        "stacked": 2,
+        "march": 4
+      }
+    }
+  },
+  "prob": {
+    "providers": {
+      "direct_vs_vehicle": {
+        "kind": "bayesian",
+        "params": {
+          "dice": 2,
+          "byLevel": {
+            "8": {
+              "2": 1.0909090909090908,
+              "S": 0.36363636363636365,
+              "3": 1.0909090909090908,
+              "1": 1.4545454545454546
+            },
+            "6": {
+              "2": 1.0909090909090908,
+              "S": 0.7272727272727273,
+              "3": 0.36363636363636365,
+              "1": 1.8181818181818181
+            },
+            "10": {
+              "2": 1.0909090909090908,
+              "4": 0.7272727272727273,
+              "3": 1.0909090909090908,
+              "1": 1.0909090909090908
+            }
+          }
+        }
+      },
+      "direct_vs_personnel": {
+        "kind": "bayesian",
+        "params": {
+          "dice": 2,
+          "byLevel": {
+            "5": {
+              "1": 2.909090909090909,
+              "S": 1.0909090909090908
+            },
+            "8": {
+              "1": 2.5454545454545454,
+              "S": 1.4545454545454546
+            }
+          }
+        }
+      },
+      "small_arms_vs_vehicle": {
+        "kind": "bayesian",
+        "params": {
+          "dice": 2,
+          "byLevel": {
+            "1": {
+              "1": 2.5454545454545454,
+              "S": 1.4545454545454546
+            }
+          }
+        }
+      }
+    }
+  },
+  "tables": {
+    "_doc": "机器可读裁决表清单（rules-as-data）；数值经内部双人交叉核验。",
+    "dir": "config/tables",
+    "hex_size_meters": 200,
+    "files": [
+      "observation_distance.json",
+      "unit_speed.json",
+      "terrain_movement.json",
+      "attack_level_vs_personnel.json",
+      "attack_level_vs_vehicle.json",
+      "attack_level_infantry_vs_vehicle.json",
+      "height_diff_correction.json",
+      "result_vs_vehicle.json",
+      "vehicle_loss_correction.json",
+      "result_vs_personnel.json",
+      "personnel_loss_correction.json",
+      "indirect_scatter.json",
+      "indirect_result.json",
+      "indirect_correction.json",
+      "aa_attack_level.json",
+      "aa_result.json",
+      "minefield.json",
+      "timings.json"
+    ]
+  }
+}

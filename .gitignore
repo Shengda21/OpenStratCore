@@ -1,0 +1,17 @@
+/target
+**/*.rs.bk
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+.codex/
+.env
+.env.*
+!/.env.example
+assets/generated/
+runs/
+*.replay.json.snapshots
+.DS_Store

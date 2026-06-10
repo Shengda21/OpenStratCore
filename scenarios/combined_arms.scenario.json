@@ -1,0 +1,243 @@
+{
+  "format": "openstratcore.scenario",
+  "version": 1,
+  "name": "合成营对决",
+  "map": "combined_arms.map.json",
+  "rules": "rules.default.json",
+  "timeLimitSeconds": 1800,
+  "sides": {
+    "red": {
+      "name": "红方合成营",
+      "units": [
+        {
+          "id": "R_CA_INF_1",
+          "type": "infantry",
+          "armor": "none",
+          "teams": 3,
+          "at": {
+            "q": 1,
+            "r": 2
+          },
+          "facing": 0,
+          "state": "stopped"
+        },
+        {
+          "id": "R_CA_INF_2",
+          "type": "infantry",
+          "armor": "none",
+          "teams": 3,
+          "at": {
+            "q": 1,
+            "r": 3
+          },
+          "facing": 0,
+          "state": "stopped"
+        },
+        {
+          "id": "R_CA_INF_3",
+          "type": "infantry",
+          "armor": "none",
+          "teams": 2,
+          "at": {
+            "q": 2,
+            "r": 4
+          },
+          "facing": 0,
+          "state": "stopped"
+        },
+        {
+          "id": "R_CA_TANK_1",
+          "type": "tank",
+          "armor": "composite",
+          "teams": 1,
+          "at": {
+            "q": 0,
+            "r": 2
+          },
+          "facing": 0,
+          "state": "stopped"
+        },
+        {
+          "id": "R_CA_TANK_2",
+          "type": "tank",
+          "armor": "heavy",
+          "teams": 1,
+          "at": {
+            "q": 0,
+            "r": 4
+          },
+          "facing": 0,
+          "state": "stopped"
+        },
+        {
+          "id": "R_CA_IFV_1",
+          "type": "ifv",
+          "armor": "medium",
+          "teams": 1,
+          "at": {
+            "q": 1,
+            "r": 1
+          },
+          "facing": 0,
+          "state": "stopped"
+        },
+        {
+          "id": "R_CA_UGV_1",
+          "type": "ugv",
+          "armor": "light",
+          "teams": 1,
+          "at": {
+            "q": 2,
+            "r": 3
+          },
+          "facing": 0,
+          "state": "stopped",
+          "affiliatedTo": "R_CA_IFV_1"
+        }
+      ]
+    },
+    "blue": {
+      "name": "蓝方合成营",
+      "units": [
+        {
+          "id": "B_CA_INF_1",
+          "type": "infantry",
+          "armor": "none",
+          "teams": 3,
+          "at": {
+            "q": 11,
+            "r": 2
+          },
+          "facing": 3,
+          "state": "stopped"
+        },
+        {
+          "id": "B_CA_INF_2",
+          "type": "infantry",
+          "armor": "none",
+          "teams": 3,
+          "at": {
+            "q": 11,
+            "r": 3
+          },
+          "facing": 3,
+          "state": "stopped"
+        },
+        {
+          "id": "B_CA_INF_3",
+          "type": "infantry",
+          "armor": "none",
+          "teams": 2,
+          "at": {
+            "q": 10,
+            "r": 4
+          },
+          "facing": 3,
+          "state": "stopped"
+        },
+        {
+          "id": "B_CA_TANK_1",
+          "type": "tank",
+          "armor": "composite",
+          "teams": 1,
+          "at": {
+            "q": 12,
+            "r": 2
+          },
+          "facing": 3,
+          "state": "stopped"
+        },
+        {
+          "id": "B_CA_TANK_2",
+          "type": "tank",
+          "armor": "heavy",
+          "teams": 1,
+          "at": {
+            "q": 12,
+            "r": 4
+          },
+          "facing": 3,
+          "state": "stopped"
+        },
+        {
+          "id": "B_CA_IFV_1",
+          "type": "ifv",
+          "armor": "medium",
+          "teams": 1,
+          "at": {
+            "q": 11,
+            "r": 5
+          },
+          "facing": 3,
+          "state": "stopped"
+        },
+        {
+          "id": "B_CA_UGV_1",
+          "type": "ugv",
+          "armor": "light",
+          "teams": 1,
+          "at": {
+            "q": 10,
+            "r": 3
+          },
+          "facing": 3,
+          "state": "stopped",
+          "affiliatedTo": "B_CA_IFV_1"
+        }
+      ]
+    }
+  },
+  "objectives": [
+    {
+      "id": "WEST_TOWN_CP",
+      "at": {
+        "q": 6,
+        "r": 2
+      },
+      "owner": "neutral",
+      "priority": "primary"
+    },
+    {
+      "id": "EAST_TOWN_CP",
+      "at": {
+        "q": 7,
+        "r": 4
+      },
+      "owner": "neutral",
+      "priority": "primary"
+    }
+  ],
+  "victory": {
+    "mode": "capture_count"
+  },
+  "facilities": [
+    {
+      "kind": "works_vehicle",
+      "at": {
+        "q": 2,
+        "r": 3
+      },
+      "owner": "red",
+      "armor": "medium",
+      "capacity": 2
+    },
+    {
+      "kind": "works_vehicle",
+      "at": {
+        "q": 10,
+        "r": 3
+      },
+      "owner": "blue",
+      "armor": "medium",
+      "capacity": 2
+    },
+    {
+      "kind": "roadblock",
+      "at": {
+        "q": 6,
+        "r": 3
+      },
+      "owner": "neutral"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+# Art prompt pack — style S1: modern military electronic map / flat vector.
+# Consumed by /gen-art (tools/gen_art.py). Unit/icon groups are generated on a
+# neutral background and auto-cropped to transparency (tools/bg_remove.py),
+# because gpt-image-2 does not support transparent backgrounds.
+
+style:
+  name: flat-military-electronic-map
+  shared_prompt: >
+    Flat vector military map graphic, clean and minimal, NATO APP-6 inspired symbology,
+    crisp solid shapes, no photographic texture, no gradients, no noise, no drop shadows,
+    no text labels, high contrast, top-down orthographic view, consistent line weight.
+  palette:
+    background_neutral: "#10141a"
+    open: "#cdbf94"
+    forest: "#4f7a4a"
+    urban: "#9aa0a6"
+    river: "#3f6fa3"
+    lake: "#2f5a8f"
+    soft: "#b08a55"
+    road: "#d8d2c2"
+    elevation_low: "#b9b27e"
+    elevation_high: "#7c6f43"
+    red_force: "#c0392b"
+    blue_force: "#2c6fbb"
+  size_px: 256
+  notes: "Generate each asset centered, filling ~70% of frame, single subject, no border."
+
+groups:
+  terrain:
+    transparent: false
+    assets:
+      - id: hex_open
+        prompt: "single flat-top hex tile, tan open ground, subtle contour line"
+      - id: hex_forest
+        prompt: "single hex tile, green forest canopy pattern"
+      - id: hex_urban
+        prompt: "single hex tile, grey urban blocks footprint"
+      - id: hex_river
+        prompt: "single hex tile, blue river band crossing the hex"
+      - id: hex_river_large
+        prompt: "single hex tile, wide deep-blue major river crossing the hex"
+      - id: hex_lake
+        prompt: "single hex tile, deep blue still water"
+      - id: hex_soft
+        prompt: "single hex tile, brown soft/marsh ground stipple"
+      - id: hex_road
+        prompt: "single hex tile, light road line crossing center"
+      - id: hex_rail
+        prompt: "single hex tile, grey railway line with cross-ties crossing center"
+      - id: elevation_ramp
+        prompt: "row of hex tiles tan to brown showing 5 elevation bands"
+
+  units:
+    transparent: true
+    variants: ["red_force", "blue_force"]
+    assets:
+      - id: tank
+        prompt: "top-down NATO-style armor icon, oval with single diagonal, bold silhouette"
+      - id: ifv
+        prompt: "top-down NATO mechanized-infantry icon"
+      - id: infantry
+        prompt: "NATO infantry icon, rectangle with crossed lines"
+      - id: artillery
+        prompt: "NATO artillery icon, filled dot in rectangle"
+      - id: uav
+        prompt: "minimal top-down fixed-wing UAV silhouette"
+      - id: attack_heli
+        prompt: "minimal top-down attack helicopter silhouette"
+      - id: transport_heli
+        prompt: "minimal top-down transport helicopter silhouette"
+      - id: loitering_munition
+        prompt: "minimal top-down loitering munition silhouette"
+      - id: recon_vehicle
+        prompt: "NATO reconnaissance icon, rectangle with single diagonal"
+      - id: aa_gun
+        prompt: "NATO anti-aircraft gun icon, rectangle with upward arrow"
+      - id: aa_missile_squad
+        prompt: "NATO man-portable air-defense missile team icon, infantry rectangle with upward missile"
+      - id: aa_missile_vehicle
+        prompt: "NATO vehicle-mounted air-defense missile icon, armor oval with upward missile"
+      - id: ugv
+        prompt: "small top-down unmanned ground vehicle silhouette"
+      - id: minelayer
+        prompt: "NATO rocket minelaying vehicle icon, armor oval with mine dots"
+      - id: minesweeper
+        prompt: "NATO mine-clearing vehicle icon, armor oval with plow"
+      - id: space_recon
+        prompt: "minimal top-down reconnaissance satellite silhouette with solar panels"
+
+  facilities:
+    transparent: true
+    assets:
+      - id: roadblock
+        prompt: "top-down roadblock marker, diagonal hazard bars"
+      - id: minefield
+        prompt: "minefield area marker, dotted boundary with mine dots"
+      - id: works
+        prompt: "field fortification marker, bracket trench symbol"
+      - id: indirect_zone
+        prompt: "artillery target zone marker, concentric ring outline"
+      - id: control_point
+        prompt: "objective flag marker on hex, simple pennant"
+
+  ui:
+    transparent: true
+    assets:
+      - id: selection_ring
+        prompt: "thin glowing hex selection ring outline"
+      - id: move_arrow
+        prompt: "flat directional movement arrow, single color"
+      - id: fire_marker
+        prompt: "small crosshair fire indicator"

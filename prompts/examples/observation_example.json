@@ -1,0 +1,19 @@
+{
+  "tick": 7,
+  "clockSeconds": 35.0,
+  "timeLimitSeconds": 1800.0,
+  "side": "red",
+  "ownUnits": [
+    { "id": "R-T1", "type": "tank", "at": { "q": 1, "r": 1 }, "teams": 4, "facing": 1,
+      "state": "moving", "weaponState": "deployed", "suppressed": false, "busyUntil": 0.0 },
+    { "id": "R-I1", "type": "infantry", "at": { "q": 0, "r": 1 }, "teams": 3, "facing": 1,
+      "state": "normal", "weaponState": "deployed", "suppressed": false, "busyUntil": 0.0 }
+  ],
+  "enemyUnits": [
+    { "id": "trk-3", "type": null, "at": { "q": 3, "r": 1 }, "lastSeenTick": 7, "estTeams": null }
+  ],
+  "objectives": [
+    { "id": "CP1", "at": { "q": 2, "r": 1 }, "owner": "neutral", "priority": "primary" }
+  ],
+  "recentEvents": ["R-T1 entered hex (1,1)", "spotted enemy track trk-3 near (3,1)"]
+}

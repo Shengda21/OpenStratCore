@@ -1,0 +1,33 @@
+{
+  "id": "personnel_loss_correction",
+  "title_zh": "人员战损结果修正",
+  "source": {
+    "page": 16,
+    "appendix": "附1.8"
+  },
+  "verified": true,
+  "dice": "1d6",
+  "additive_random": {
+    "shooter": {
+      "被压制": -1,
+      "机动中": -1
+    },
+    "target_terrain": {
+      "居民地": -1,
+      "丛林地": -2,
+      "工事": -1
+    },
+    "target_state": {
+      "掩蔽中": -2,
+      "机动中": -2,
+      "堆叠中": 2,
+      "行军中": 4
+    }
+  },
+  "by_modified_random": {
+    "<=0": -1,
+    "1..7": 0,
+    ">=8": 1
+  },
+  "hex_size_meters": 200
+}

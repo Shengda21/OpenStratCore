@@ -1,0 +1,20 @@
+[workspace]
+resolver = "2"
+members = ["crates/openstratcore-core", "crates/openstratcore-py", "crates/openstratcore-wasm"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://example.com/openstratcore"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+# Deterministic, seedable PRNG (NOT the OS RNG — determinism is a hard requirement).
+# No `std` feature: it pulls getrandom (OS entropy), which the engine must never use (硬规则 #1 — all
+# randomness goes through a seeded rng::Rng). Dropping it also lets the core compile to wasm32 (getrandom
+# v0.2 refuses wasm*-unknown-unknown without a "js" backend). gen_range + seed_from_u64 need no std.
+rand = { version = "0.8", default-features = false }
+rand_pcg = "0.3"

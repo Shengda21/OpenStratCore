@@ -1,0 +1,52 @@
+{
+  "id": "terrain_movement",
+  "title_zh": "地形与机动系数",
+  "source": {
+    "page": 3,
+    "appendix": "三.1.2-1.4"
+  },
+  "verified": true,
+  "vehicle_terrain_factor": {
+    "丛林地": 0.5,
+    "居民地": 0.3333,
+    "小河流": 0.5,
+    "大河流": 0.25,
+    "松软地": 0.25,
+    "公路_铁路": 1.0,
+    "note": "车辆沿公路/铁路机动不受高程/丛林/松软影响"
+  },
+  "slope_factor": {
+    "1": 1.0,
+    "2": 0.5,
+    "3": 0.3333,
+    "4": 0.25,
+    "5": 0.2,
+    ">5": "不可通行",
+    "rule": "系数=1/坡度等级"
+  },
+  "slope_def": "坡度等级=两格高程差/单位高程差；单位高程差∈{5,10,20}米",
+  "march_speed_kmh": {
+    "乡村路_黑": 40,
+    "一般公路_红": 60,
+    "等级公路_黄": 90
+  },
+  "march_note": "行军须沿道路；行军≈普通机动2倍；不受地形/高差影响",
+  "personnel": {
+    "terrain_independent": true,
+    "high_diff_gt_60m_factor": 0.5,
+    "一级冲锋": {
+      "speed_mult": 2,
+      "fatigue_per_hex": 1
+    },
+    "二级冲锋": {
+      "speed_mult": 4,
+      "fatigue_per_hex": 1
+    },
+    "fatigue_decay": "停止后每75秒疲劳-1；一级疲劳禁二级冲锋；二级疲劳禁机动"
+  },
+  "blocked": [
+    "路障"
+  ],
+  "炮兵": "不能机动",
+  "hex_size_meters": 200
+}

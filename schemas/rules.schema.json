@@ -1,0 +1,525 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openstratcore/schemas/rules.schema.json",
+  "title": "Rules",
+  "description": "ALL tunable numbers and adjudication tables (rules-as-data) + probability-provider configuration. Logic must read these, never hardcode.",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "hex_size_meters",
+    "timing",
+    "movement",
+    "air",
+    "fortification",
+    "minefield",
+    "weapons",
+    "prob"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "openstratcore.rules"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "hex_size_meters": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Physical size of one hex in metres (三.1.3 行军 km/h → 秒/格 conversion; the adjudication tables likewise assume 200 m)."
+    },
+    "timing": {
+      "type": "object",
+      "description": "All fixed durations, in seconds.",
+      "additionalProperties": false,
+      "properties": {
+        "decision_tick_seconds": {
+          "type": "number",
+          "default": 5,
+          "description": "Discretization step for LLM/RL decisions."
+        },
+        "move_to_stop": {
+          "type": "integer",
+          "default": 75
+        },
+        "weapon_lock": {
+          "type": "integer",
+          "default": 75
+        },
+        "weapon_deploy": {
+          "type": "integer",
+          "default": 75
+        },
+        "weapon_cooldown_direct": {
+          "type": "integer",
+          "default": 75
+        },
+        "cover_transition": {
+          "type": "integer",
+          "default": 75
+        },
+        "move_state_transition": {
+          "type": "integer",
+          "default": 75,
+          "description": "Time to switch movement mode (正常/一级冲锋/二级冲锋/半速/行军/掩蔽) — 三.1."
+        },
+        "mount_dismount": {
+          "type": "integer",
+          "default": 75
+        },
+        "aggregate_split": {
+          "type": "integer",
+          "default": 75,
+          "description": "三.17b/c: 聚合/解聚 completion time, seconds."
+        },
+        "fortification_transition": {
+          "type": "integer",
+          "default": 75,
+          "description": "三.20b: 进入/离开工事 completion time, seconds."
+        },
+        "minefield_lay": {
+          "type": "integer",
+          "default": 75,
+          "description": "三.21c: time to lay one 雷场 hex with a 火箭布雷车, seconds."
+        },
+        "suppress_duration": {
+          "type": "integer",
+          "default": 150
+        },
+        "indirect_fly": {
+          "type": "integer",
+          "default": 150
+        },
+        "indirect_boom": {
+          "type": "integer",
+          "default": 300
+        },
+        "indirect_cooldown": {
+          "type": "integer",
+          "default": 300
+        },
+        "loitering_endurance": {
+          "type": "integer",
+          "default": 1200
+        },
+        "loitering_launch": {
+          "type": "integer",
+          "default": 75
+        },
+        "radar_spinup": {
+          "type": "integer",
+          "default": 75
+        },
+        "heli_altitude_switch": {
+          "type": "integer",
+          "default": 75
+        },
+        "same_hex_engage_interval": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 25
+        }
+      }
+    },
+    "movement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["infantry_charge", "infantry_fatigue_decay_seconds"],
+      "properties": {
+        "base_speed_sec_per_hex": {
+          "type": "object",
+          "description": "Standard speed (no terrain/slope), seconds per hex, by unit type.",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "terrain_speed_factor": {
+          "type": "object",
+          "description": "Multiplier on time per hex for vehicles by terrain (>1 = slower). e.g. forest 2.0, urban 3.0, river_small 2.0, river_large 4.0, soft 4.0.",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "slope_rule": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "impassable_above_level": {
+              "type": "integer",
+              "default": 5
+            },
+            "factor_per_level": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "description": "time multiplier indexed by slope level (1..5)."
+            }
+          }
+        },
+        "infantry_highdiff_meters_halfspeed": {
+          "type": "integer",
+          "default": 60
+        },
+        "infantry_charge": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["charge1", "charge2"],
+          "description": "一/二级冲锋的速度倍率与每格疲劳 (三.1.4).",
+          "properties": {
+            "charge1": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["speed_mult", "fatigue_per_hex"],
+              "properties": {
+                "speed_mult": { "type": "number", "exclusiveMinimum": 0 },
+                "fatigue_per_hex": { "type": "integer", "minimum": 0 }
+              }
+            },
+            "charge2": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["speed_mult", "fatigue_per_hex"],
+              "properties": {
+                "speed_mult": { "type": "number", "exclusiveMinimum": 0 },
+                "fatigue_per_hex": { "type": "integer", "minimum": 0 }
+              }
+            }
+          }
+        },
+        "infantry_fatigue_decay_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 75,
+          "description": "停止后每该秒数疲劳 -1 (三.1.4)."
+        },
+        "march_speed_kmh": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "country": {
+              "type": "number",
+              "default": 40
+            },
+            "normal": {
+              "type": "number",
+              "default": 60
+            },
+            "grade": {
+              "type": "number",
+              "default": 90
+            }
+          }
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "description": "Observation distances (hexes) by observer->target type; cover halves, etc.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        }
+      }
+    },
+    "control": {
+      "type": "object",
+      "description": "夺控/堆叠 constants (三.4/三.5). Logic reads these, never hardcodes.",
+      "additionalProperties": false,
+      "properties": {
+        "stacking_max_ground_units_per_hex": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Max own ground units stacked in one hex (三.4a); the next is refused entry."
+        },
+        "capture_no_enemy_radius_hexes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Capture needs no enemy ground unit within this hex radius of the objective center (三.5a; 1 = center + 6 neighbors)."
+        },
+        "max_squads_per_unit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 255,
+          "description": "三.17b: per-算子 squad/vehicle cap (车/班数上限); a 聚合 must not exceed it. Bounded to u8 (the engine stores 车/班数 as u8)."
+        }
+      },
+      "required": [
+        "stacking_max_ground_units_per_hex",
+        "capture_no_enemy_radius_hexes",
+        "max_squads_per_unit"
+      ]
+    },
+    "fortification": {
+      "type": "object",
+      "description": "三.20 工事 constants. Logic reads these, never hardcodes.",
+      "additionalProperties": false,
+      "properties": {
+        "capacity_squads": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "三.20d: per-工事 garrison capacity in 人/车班数 (5)."
+        },
+        "exposed_range_hexes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "三.20.1a: hex range at which a 车辆/战斗工事 can be observed & fired upon (12). A 隐蔽工事 is 本格-only regardless."
+        }
+      },
+      "required": ["capacity_squads", "exposed_range_hexes"]
+    },
+    "minefield": {
+      "type": "object",
+      "description": "三.21 雷场 constants. Logic reads these, never hardcodes.",
+      "additionalProperties": false,
+      "properties": {
+        "lay_range_hexes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "三.21c: range (hexes) within which a 火箭布雷车 may lay (50)."
+        },
+        "max_lays_per_vehicle": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "三.21c: max 布雷 actions per 火箭布雷车 (3)."
+        },
+        "observe_range_hexes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "三.21a: 雷场 observation distance (10); 遮蔽地形 halves it."
+        }
+      },
+      "required": ["lay_range_hexes", "max_lays_per_vehicle", "observe_range_hexes"]
+    },
+    "air": {
+      "type": "object",
+      "description": "空中单位 constants (三.10–三.12).",
+      "additionalProperties": false,
+      "properties": {
+        "recon_altitude_meters": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Flight altitude above the hex (三.10a/三.11a/三.12a, +200m) — air units see over terrain by this much."
+        },
+        "heli_altitude_meters": {
+          "type": "object",
+          "description": "运输直升机 altitude states (三.16b): 高空/低空/超低空 metres above the hex.",
+          "additionalProperties": false,
+          "properties": {
+            "high": { "type": "integer", "minimum": 0 },
+            "low": { "type": "integer", "minimum": 0 },
+            "very_low": { "type": "integer", "minimum": 0 }
+          },
+          "required": ["high", "low", "very_low"]
+        },
+        "heli_capacity_squads": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "运输直升机 carry capacity in 班 (三.16f)."
+        },
+        "aa": {
+          "type": "object",
+          "description": "三.18 特别防空算子: per unit-type AA weapon + 射速/弹药 (interval seconds, max shots).",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["weapon", "interval", "max_shots"],
+            "properties": {
+              "weapon": { "type": "string", "description": "AA weapon key in aa_attack_level.json." },
+              "interval": { "type": "integer", "minimum": 1, "description": "三.18: seconds between AA shots." },
+              "max_shots": { "type": "integer", "minimum": 1, "description": "三.18g: max AA shots per 车/班." }
+            }
+          }
+        }
+      },
+      "required": [
+        "recon_altitude_meters",
+        "heli_altitude_meters",
+        "heli_capacity_squads",
+        "aa"
+      ]
+    },
+    "loadout": {
+      "type": "object",
+      "description": "Default weapons each ground unit type carries, by unit-type key — used to auto-pick a weapon for 同格交战 (三.15a). Keyed weapon names match config/tables/*.json.",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "weapons": {
+      "type": "object",
+      "description": "Weapon definitions keyed by weapon id.",
+      "additionalProperties": {
+        "$ref": "#/$defs/weapon"
+      }
+    },
+    "combatResultTables": {
+      "type": "object",
+      "description": "Random-number -> result lookup tables, keyed by table id (e.g. 'direct_vs_vehicle', 'direct_vs_personnel').",
+      "additionalProperties": {
+        "$ref": "#/$defs/resultTable"
+      }
+    },
+    "modifiers": {
+      "type": "object",
+      "description": "Height-diff corrections and combat-result modifiers (shooter state / target terrain / target state / armor).",
+      "additionalProperties": true
+    },
+    "prob": {
+      "type": "object",
+      "required": [
+        "providers"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "providers": {
+          "type": "object",
+          "description": "Per result-table provider selection.",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "kind"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "static",
+                  "bayesian",
+                  "model"
+                ]
+              },
+              "params": {
+                "type": "object",
+                "description": "bayesian: Dirichlet concentration per cell/outcome (posterior after calibration). model: path/weights ref.",
+                "additionalProperties": true
+              }
+            },
+            "allOf": [
+              {
+                "comment": "A bayesian provider must carry calibrated weights: params.byLevel[level][outcome] = α ≥ 0.",
+                "if": { "properties": { "kind": { "const": "bayesian" } }, "required": ["kind"] },
+                "then": {
+                  "required": ["params"],
+                  "properties": {
+                    "params": {
+                      "type": "object",
+                      "required": ["byLevel"],
+                      "properties": {
+                        "byLevel": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "additionalProperties": { "type": "number", "minimum": 0 }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "tables": {
+      "type": "object",
+      "description": "manifest of machine-readable adjudication tables in config/tables/"
+    }
+  },
+  "$defs": {
+    "weapon": {
+      "type": "object",
+      "required": [
+        "range",
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "direct",
+            "indirect",
+            "missile",
+            "aa",
+            "small_arms",
+            "loitering"
+          ]
+        },
+        "range": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Range in hexes."
+        },
+        "attackLevelByDistance": {
+          "type": "array",
+          "description": "Attack level indexed by distance (hexes). May be a flat array, or per-crew-count rows.",
+          "items": {
+            "type": [
+              "integer",
+              "array"
+            ]
+          }
+        },
+        "resultTable": {
+          "type": "string",
+          "description": "Which combatResultTables entry to use."
+        },
+        "moving_fire": {
+          "type": "boolean",
+          "default": false
+        },
+        "shots": {
+          "type": "integer",
+          "description": "Max shots (for AA etc.)."
+        },
+        "interval": {
+          "type": "integer",
+          "description": "Seconds between shots (for AA etc.)."
+        }
+      }
+    },
+    "resultTable": {
+      "type": "object",
+      "description": "Maps (attack_level, random) -> outcome. Outcome semantics: integer = teams/vehicles destroyed; 'S' = suppress; 'N' = no effect; 'K' = kill (annihilate).",
+      "additionalProperties": false,
+      "required": [
+        "randomDice",
+        "cells"
+      ],
+      "properties": {
+        "randomDice": {
+          "type": "integer",
+          "enum": [
+            1,
+            2
+          ],
+          "description": "Number of d6 summed to get the random index."
+        },
+        "cells": {
+          "type": "object",
+          "description": "Keyed by attack level (string). Each value maps random-sum (string) -> outcome.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": [
+                "integer",
+                "string"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "result_vs_personnel",
+  "title_zh": "直瞄武器对人员/步兵轻武器对车辆战斗结果表",
+  "source": {
+    "page": 16,
+    "appendix": "附1.7"
+  },
+  "verified": true,
+  "legend": {
+    "压": "压制",
+    "int": "毁伤班数",
+    "null": "无效"
+  },
+  "columns": "攻击等级 1..10",
+  "rows": {
+    "2": ["压", "压", "压", "压", 1, 2, 2, 2, 2, 2],
+    "3": [null, "压", "压", "压", "压", 1, 1, 1, 1, 1],
+    "4": [null, null, "压", "压", "压", "压", "压", 1, 1, 1],
+    "5": [null, null, null, null, "压", "压", "压", "压", 1, 1],
+    "6": [null, null, null, null, null, "压", "压", "压", "压", "压"],
+    "7": [null, null, null, null, null, null, "压", "压", "压", "压"],
+    "8": [null, null, null, null, null, null, "压", "压", "压", "压"],
+    "9": [null, null, null, null, null, "压", "压", "压", "压", 1],
+    "10": [null, null, null, "压", "压", "压", "压", "压", 1, 1],
+    "11": [null, "压", "压", "压", "压", "压", "压", 1, 1, 2],
+    "12": ["压", "压", "压", "压", "压", 1, 2, 2, 2, 2]
+  },
+  "hex_size_meters": 200
+}

@@ -1,0 +1,24 @@
+{
+  "format": "openstratcore.map",
+  "version": 1,
+  "name": "Demo Valley",
+  "elevationUnitMeters": 10,
+  "bounds": { "qMin": 0, "qMax": 4, "rMin": 0, "rMax": 4 },
+  "hexes": [
+    { "q": 0, "r": 0, "id": "0000", "elevation": 2, "terrain": "open" },
+    { "q": 1, "r": 0, "id": "0100", "elevation": 4, "terrain": "forest" },
+    { "q": 2, "r": 0, "id": "0200", "elevation": 6, "terrain": "open" },
+    { "q": 3, "r": 0, "id": "0300", "elevation": 3, "terrain": "urban" },
+    { "q": 4, "r": 0, "id": "0400", "elevation": 1, "terrain": "open" },
+    { "q": 0, "r": 1, "id": "0001", "elevation": 1, "terrain": "open", "road": { "kind": "normal", "connects": [2, 5] } },
+    { "q": 1, "r": 1, "id": "0101", "elevation": 1, "terrain": "road", "road": { "kind": "normal", "connects": [2, 5] } },
+    { "q": 2, "r": 1, "id": "0201", "elevation": 2, "terrain": "open" },
+    { "q": 3, "r": 1, "id": "0301", "elevation": 0, "terrain": "river" },
+    { "q": 4, "r": 1, "id": "0401", "elevation": 0, "terrain": "soft" },
+    { "q": 0, "r": 2, "id": "0002", "elevation": 0, "terrain": "open" },
+    { "q": 1, "r": 2, "id": "0102", "elevation": 2, "terrain": "open" },
+    { "q": 2, "r": 2, "id": "0202", "elevation": 5, "terrain": "forest" },
+    { "q": 3, "r": 2, "id": "0302", "elevation": 2, "terrain": "open" },
+    { "q": 4, "r": 2, "id": "0402", "elevation": 1, "terrain": "urban" }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openstratcore/schemas/llm_tools.schema.json",
+  "title": "LLM Commander Interface",
+  "description": "Observation (fog-of-war, per side) the engine gives the LLM, and the action/tool schema the LLM returns. Action shapes are reused verbatim by replay.commands[].command.",
+  "type": "object",
+  "$defs": {
+    "axial": {
+      "type": "object", "required": ["q", "r"], "additionalProperties": false,
+      "properties": { "q": { "type": "integer" }, "r": { "type": "integer" } }
+    },
+    "observation": {
+      "type": "object",
+      "description": "What ONE side sees at a decision tick. Enemy units appear only if currently observed (per observation rules); fields may be reduced.",
+      "required": ["tick", "clockSeconds", "side", "ownUnits", "enemyUnits", "objectives"],
+      "additionalProperties": false,
+      "properties": {
+        "tick": { "type": "integer" },
+        "clockSeconds": { "type": "number" },
+        "timeLimitSeconds": { "type": "number" },
+        "side": { "type": "string", "enum": ["red", "blue"] },
+        "ownUnits": { "type": "array", "items": { "$ref": "#/$defs/ownUnit" } },
+        "enemyUnits": { "type": "array", "items": { "$ref": "#/$defs/enemyUnit" } },
+        "objectives": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "properties": { "id": { "type": "string" }, "at": { "$ref": "#/$defs/axial" }, "owner": { "type": "string" }, "priority": { "type": "string" } }
+          }
+        },
+        "facilities": {
+          "type": "array",
+          "description": "工事 (三.20) this side may use — its own + neutral; an enemy's 工事 is concealed (rule #5).",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "properties": { "id": { "type": "string" }, "kind": { "type": "string" }, "at": { "$ref": "#/$defs/axial" }, "capacity": { "type": "integer" }, "occupantSquads": { "type": "integer" } }
+          }
+        },
+        "enemyFortifications": {
+          "type": "array",
+          "description": "Enemy 车辆/战斗工事 (三.20.1/.2) seen as a structure within 12 格 — id/kind/hex only, never occupancy (rule #5). A 隐蔽工事 is never listed (本格-only).",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["id", "kind", "at"],
+            "properties": { "id": { "type": "string" }, "kind": { "type": "string" }, "at": { "$ref": "#/$defs/axial" } }
+          }
+        },
+        "minefields": {
+          "type": "array",
+          "description": "Visible 雷场 (三.21a) — own, or within observation range + 通视 of an own ground unit. Hex only, never owner (rule #5).",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["at"],
+            "properties": { "at": { "$ref": "#/$defs/axial" } }
+          }
+        },
+        "knownTerrainNote": { "type": "string", "description": "Optional summary; full map is provided once at match start." },
+        "recentEvents": { "type": "array", "items": { "type": "string" }, "description": "Human-readable events since last tick." }
+      }
+    },
+    "ownUnit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "type", "at", "teams", "state"],
+      "properties": {
+        "id": { "type": "string" }, "type": { "type": "string" }, "at": { "$ref": "#/$defs/axial" },
+        "teams": { "type": "integer" }, "armor": { "type": "string" }, "facing": { "type": "integer" },
+        "state": { "type": "string" }, "weaponState": { "type": "string", "enum": ["deployed", "locked", "cooling"] },
+        "suppressed": { "type": "boolean" }, "mountedIn": { "type": "string" }, "ammo": { "type": "object", "additionalProperties": { "type": "integer" } },
+        "altitude": { "type": "string", "enum": ["high", "low", "very_low"], "description": "运输直升机 only (三.16): current flight altitude band. Own-side field, never present on enemy contacts." },
+        "insideFacility": { "type": "string", "description": "工事 id this unit is garrisoned inside (三.20). Own-side field; a 全程隐蔽 garrison never appears on enemy contacts." },
+        "fatigue": { "type": "integer", "description": "步兵 活体疲劳 (三.1.4): 0=无, 1=一级疲劳 (bars 二级冲锋), ≥2=二级疲劳 (bars all movement). Decays −1 per 75 s idle. Own-side field, omitted when 0; never present on enemy contacts." },
+        "busyUntil": { "type": "number", "description": "Seconds until current transition completes (0 if idle)." }
+      }
+    },
+    "enemyUnit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "at"],
+      "properties": {
+        "id": { "type": "string", "description": "Stable id if recognized; else a track id." },
+        "type": { "type": ["string", "null"], "description": "null if type not yet identified." },
+        "at": { "$ref": "#/$defs/axial" },
+        "lastSeenTick": { "type": "integer" }, "estTeams": { "type": ["integer", "null"] },
+        "track": { "type": "string", "enum": ["space"], "description": "Present when this contact comes only from 天基侦察 (三.22): a reduced track (no teams), NOT directly observed — cannot be 直瞄 targeted (三.22d)." }
+      }
+    },
+    "action": {
+      "type": "object",
+      "description": "One order. The LLM returns a list of these (one per controllable unit at most).",
+      "oneOf": [
+        { "required": ["op", "unitId", "target"], "properties": { "op": { "const": "move_to" }, "unitId": { "type": "string" }, "target": { "$ref": "#/$defs/axial" }, "mode": { "type": "string", "enum": ["normal", "half", "charge1", "charge2"], "description": "Per-MOVE speed for THIS order (no 75 s transition): half=半速; charge1/charge2=一二级冲锋 (步兵 only, 三.1.4 — +1 疲劳/hex, and the burst halts once 疲劳 bars the mode: 一级疲劳(1) stops 二级冲锋, 二级疲劳(2) stops all movement). 行军 is NOT a per-move mode — set it via set_mode and then move_to without a mode." } } },
+        { "required": ["op", "unitId", "mode"], "properties": { "op": { "const": "set_mode" }, "unitId": { "type": "string" }, "mode": { "type": "string", "enum": ["normal", "march", "cover"], "description": "Persistent postures only. 半速 and 一二级冲锋 are NOT here — they are per-MOVE speeds (move_to mode:half/charge1/charge2), not standing postures." } } },
+        { "required": ["op", "unitId"], "properties": { "op": { "const": "stop" }, "unitId": { "type": "string" } } },
+        { "required": ["op", "unitId", "weapon"], "oneOf": [ { "required": ["targetUnit"] }, { "required": ["targetFacility"] } ], "properties": { "op": { "const": "fire_direct" }, "unitId": { "type": "string" }, "weapon": { "type": "string" }, "targetUnit": { "type": "string" }, "targetFacility": { "type": "string", "description": "工事 id to fire AT (三.20.1c/2c) — the structure is the target; exactly one of targetUnit/targetFacility." } } },
+        { "required": ["op", "unitId", "targetUnit"], "properties": { "op": { "const": "aa_fire" }, "unitId": { "type": "string" }, "targetUnit": { "type": "string" } } },
+        { "required": ["op", "unitId", "guideId", "weapon", "targetUnit"], "properties": { "op": { "const": "guide_fire" }, "unitId": { "type": "string" }, "guideId": { "type": "string" }, "weapon": { "type": "string" }, "targetUnit": { "type": "string" } } },
+        { "required": ["op", "unitId", "targetHex"], "properties": { "op": { "const": "plan_indirect" }, "unitId": { "type": "string" }, "targetHex": { "$ref": "#/$defs/axial" } } },
+        { "required": ["op", "unitId"], "properties": { "op": { "const": "cancel_indirect" }, "unitId": { "type": "string" } } },
+        { "required": ["op", "unitId", "targetArea"], "properties": { "op": { "const": "launch_loitering" }, "unitId": { "type": "string" }, "targetArea": { "$ref": "#/$defs/axial" } } },
+        { "required": ["op", "unitId", "targetUnit"], "properties": { "op": { "const": "strike_loitering" }, "unitId": { "type": "string", "description": "A deployed 巡飞弹." }, "targetUnit": { "type": "string", "description": "三.10f 打击: the deployed 巡飞弹 strikes this observed enemy via the 直瞄对车 pipeline (range 2, 附1.2 level 5). One-shot — the munition is expended. Fly it into range first via move_to." } } },
+        { "required": ["op", "unitId", "vehicleId"], "properties": { "op": { "const": "mount" }, "unitId": { "type": "string" }, "vehicleId": { "type": "string" } } },
+        { "required": ["op", "unitId"], "properties": { "op": { "const": "dismount" }, "unitId": { "type": "string" }, "at": { "$ref": "#/$defs/axial" } } },
+        { "required": ["op", "unitId"], "properties": { "op": { "const": "capture" }, "unitId": { "type": "string" } } },
+        { "required": ["op", "unitId"], "properties": { "op": { "const": "radar_on" }, "unitId": { "type": "string" } } },
+        { "required": ["op", "unitId", "altitude"], "properties": { "op": { "const": "switch_altitude" }, "unitId": { "type": "string" }, "altitude": { "type": "string", "enum": ["high", "low", "very_low"] } } },
+        { "required": ["op", "unitId", "facilityId"], "properties": { "op": { "const": "enter_facility" }, "unitId": { "type": "string" }, "facilityId": { "type": "string" } } },
+        { "required": ["op", "unitId"], "properties": { "op": { "const": "exit_facility" }, "unitId": { "type": "string" } } },
+        { "required": ["op", "unitId", "targetHex"], "properties": { "op": { "const": "lay_mines" }, "unitId": { "type": "string", "description": "A 火箭布雷车 (minelayer)." }, "targetHex": { "$ref": "#/$defs/axial" } } },
+        { "required": ["op", "unitId", "targetUnit"], "properties": { "op": { "const": "aggregate" }, "unitId": { "type": "string" }, "targetUnit": { "type": "string", "description": "三.17b 聚合: merge this same-type, same-hex, same-side 班 into unitId over 75 s (combined 班数 ≤ cap). Ground non-炮兵 only; both must be Stopped, unsuppressed, not in 同格交战." } } },
+        { "required": ["op", "unitId"], "properties": { "op": { "const": "split" }, "unitId": { "type": "string", "description": "三.17c 解聚: fission this 班 over 75 s into a smaller half (kept) + a spawned child taking the other half (4→2+2, 3→2+1, 2→1+1). Needs ≥2 班, a free stacking slot, Stopped + unsuppressed + not in 同格交战." } } },
+        { "required": ["op"], "properties": { "op": { "const": "wait" } } }
+      ]
+    },
+    "actionList": {
+      "type": "object",
+      "required": ["actions"],
+      "additionalProperties": false,
+      "properties": {
+        "reasoning": { "type": "string", "description": "Optional brief intent; not executed." },
+        "actions": { "type": "array", "items": { "$ref": "#/$defs/action" } }
+      }
+    }
+  }
+}

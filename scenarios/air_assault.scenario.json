@@ -1,0 +1,177 @@
+{
+  "format": "openstratcore.scenario",
+  "version": 1,
+  "name": "空中突击",
+  "map": "air_assault.map.json",
+  "rules": "rules.default.json",
+  "timeLimitSeconds": 1800,
+  "sides": {
+    "red": {
+      "name": "红方空中突击队",
+      "units": [
+        {
+          "id": "R_TH_1",
+          "type": "transport_heli",
+          "armor": "light",
+          "teams": 1,
+          "at": {
+            "q": 1,
+            "r": 2
+          },
+          "facing": 0,
+          "state": "stopped"
+        },
+        {
+          "id": "R_AIR_INF_1",
+          "type": "infantry",
+          "armor": "none",
+          "teams": 3,
+          "at": {
+            "q": 1,
+            "r": 2
+          },
+          "facing": 0,
+          "state": "stopped",
+          "carriedBy": "R_TH_1"
+        },
+        {
+          "id": "R_AIR_INF_2",
+          "type": "infantry",
+          "armor": "none",
+          "teams": 3,
+          "at": {
+            "q": 1,
+            "r": 2
+          },
+          "facing": 0,
+          "state": "stopped",
+          "carriedBy": "R_TH_1"
+        },
+        {
+          "id": "R_IFV_1",
+          "type": "ifv",
+          "armor": "medium",
+          "teams": 1,
+          "at": {
+            "q": 0,
+            "r": 3
+          },
+          "facing": 0,
+          "state": "stopped"
+        },
+        {
+          "id": "R_LM_1",
+          "type": "loitering_munition",
+          "armor": "none",
+          "teams": 1,
+          "at": {
+            "q": 0,
+            "r": 3
+          },
+          "facing": 0,
+          "state": "stopped",
+          "carriedBy": "R_IFV_1"
+        },
+        {
+          "id": "R_RECON_1",
+          "type": "recon_vehicle",
+          "armor": "light",
+          "teams": 1,
+          "at": {
+            "q": 1,
+            "r": 4
+          },
+          "facing": 0,
+          "state": "stopped"
+        }
+      ]
+    },
+    "blue": {
+      "name": "蓝方后方警戒队",
+      "units": [
+        {
+          "id": "B_GUARD_1",
+          "type": "infantry",
+          "armor": "none",
+          "teams": 3,
+          "at": {
+            "q": 8,
+            "r": 3
+          },
+          "facing": 3,
+          "state": "stopped"
+        },
+        {
+          "id": "B_GUARD_2",
+          "type": "infantry",
+          "armor": "none",
+          "teams": 3,
+          "at": {
+            "q": 9,
+            "r": 4
+          },
+          "facing": 3,
+          "state": "stopped"
+        },
+        {
+          "id": "B_AA_1",
+          "type": "aa_missile_vehicle",
+          "armor": "medium",
+          "teams": 1,
+          "at": {
+            "q": 9,
+            "r": 2
+          },
+          "facing": 3,
+          "state": "stopped"
+        },
+        {
+          "id": "B_AH_1",
+          "type": "attack_heli",
+          "armor": "light",
+          "teams": 1,
+          "at": {
+            "q": 7,
+            "r": 2
+          },
+          "facing": 3,
+          "state": "stopped"
+        }
+      ]
+    }
+  },
+  "objectives": [
+    {
+      "id": "REAR_CP",
+      "at": {
+        "q": 8,
+        "r": 4
+      },
+      "owner": "neutral",
+      "priority": "primary"
+    }
+  ],
+  "victory": {
+    "mode": "capture_all"
+  },
+  "facilities": [
+    {
+      "kind": "works_infantry_hidden",
+      "at": {
+        "q": 8,
+        "r": 4
+      },
+      "owner": "blue",
+      "armor": "medium",
+      "capacity": 2
+    },
+    {
+      "kind": "roadblock",
+      "at": {
+        "q": 7,
+        "r": 4
+      },
+      "owner": "blue"
+    }
+  ]
+}

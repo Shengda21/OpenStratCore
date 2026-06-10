@@ -1,0 +1,41 @@
+{
+  "id": "indirect_correction",
+  "title_zh": "间瞄火力战斗结果修正",
+  "source": {
+    "page": 19,
+    "appendix": "附2.6"
+  },
+  "verified": true,
+  "dice": "1d6",
+  "additive_random": {
+    "target_terrain": {
+      "居民地": -1,
+      "丛林地": -2
+    },
+    "target_state": {
+      "掩蔽中": -2,
+      "机动中_人员": 2,
+      "堆叠": 2,
+      "行军": 4
+    },
+    "armor": {
+      "复合装甲": -3,
+      "重型装甲": -1,
+      "中型装甲": 0,
+      "轻型装甲": 1
+    },
+    "gun_count": {
+      "1": -4,
+      "2": -2,
+      "3": 0,
+      "4": 2
+    }
+  },
+  "by_modified_random": {
+    "<=1": -2,
+    "2..4": -1,
+    "5..7": 0,
+    ">=8": 1
+  },
+  "hex_size_meters": 200
+}

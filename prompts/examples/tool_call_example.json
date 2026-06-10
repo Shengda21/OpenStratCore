@@ -1,0 +1,7 @@
+{
+  "reasoning": "T1 advances onto the objective while I-1 covers; do not fire yet (range > 3, type unknown).",
+  "actions": [
+    { "op": "move_to", "unitId": "R-T1", "target": { "q": 2, "r": 1 }, "mode": "normal" },
+    { "op": "move_to", "unitId": "R-I1", "target": { "q": 1, "r": 1 }, "mode": "normal" }
+  ]
+}
