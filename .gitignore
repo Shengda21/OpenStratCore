@@ -11,7 +11,9 @@ build/
 .env
 .env.*
 !/.env.example
-assets/generated/
-runs/
+# assets/generated/ is product art (unit/terrain sprites + manifest) — tracked & shipped with the web build.
+# Training output dirs (anchored, so web/public/runs/ — the shipped demo replay — stays tracked).
+/runs/
+python/runs/
 *.replay.json.snapshots
 .DS_Store

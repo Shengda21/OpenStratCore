@@ -1,0 +1,302 @@
+{
+  "hex_open": {
+    "group": "terrain",
+    "file": "hex_open.png",
+    "transparent": false,
+    "variant": null
+  },
+  "hex_forest": {
+    "group": "terrain",
+    "file": "hex_forest.png",
+    "transparent": false,
+    "variant": null
+  },
+  "hex_urban": {
+    "group": "terrain",
+    "file": "hex_urban.png",
+    "transparent": false,
+    "variant": null
+  },
+  "hex_river": {
+    "group": "terrain",
+    "file": "hex_river.png",
+    "transparent": false,
+    "variant": null
+  },
+  "hex_river_large": {
+    "group": "terrain",
+    "file": "hex_river_large.png",
+    "transparent": false,
+    "variant": null
+  },
+  "hex_lake": {
+    "group": "terrain",
+    "file": "hex_lake.png",
+    "transparent": false,
+    "variant": null
+  },
+  "hex_soft": {
+    "group": "terrain",
+    "file": "hex_soft.png",
+    "transparent": false,
+    "variant": null
+  },
+  "hex_road": {
+    "group": "terrain",
+    "file": "hex_road.png",
+    "transparent": false,
+    "variant": null
+  },
+  "hex_rail": {
+    "group": "terrain",
+    "file": "hex_rail.png",
+    "transparent": false,
+    "variant": null
+  },
+  "elevation_ramp": {
+    "group": "terrain",
+    "file": "elevation_ramp.png",
+    "transparent": false,
+    "variant": null
+  },
+  "tank_red_force": {
+    "group": "units",
+    "file": "tank_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "tank_blue_force": {
+    "group": "units",
+    "file": "tank_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "ifv_red_force": {
+    "group": "units",
+    "file": "ifv_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "ifv_blue_force": {
+    "group": "units",
+    "file": "ifv_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "infantry_red_force": {
+    "group": "units",
+    "file": "infantry_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "infantry_blue_force": {
+    "group": "units",
+    "file": "infantry_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "artillery_red_force": {
+    "group": "units",
+    "file": "artillery_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "artillery_blue_force": {
+    "group": "units",
+    "file": "artillery_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "uav_red_force": {
+    "group": "units",
+    "file": "uav_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "uav_blue_force": {
+    "group": "units",
+    "file": "uav_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "attack_heli_red_force": {
+    "group": "units",
+    "file": "attack_heli_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "attack_heli_blue_force": {
+    "group": "units",
+    "file": "attack_heli_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "transport_heli_red_force": {
+    "group": "units",
+    "file": "transport_heli_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "transport_heli_blue_force": {
+    "group": "units",
+    "file": "transport_heli_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "loitering_munition_red_force": {
+    "group": "units",
+    "file": "loitering_munition_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "loitering_munition_blue_force": {
+    "group": "units",
+    "file": "loitering_munition_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "recon_vehicle_red_force": {
+    "group": "units",
+    "file": "recon_vehicle_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "recon_vehicle_blue_force": {
+    "group": "units",
+    "file": "recon_vehicle_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "aa_gun_red_force": {
+    "group": "units",
+    "file": "aa_gun_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "aa_gun_blue_force": {
+    "group": "units",
+    "file": "aa_gun_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "aa_missile_squad_red_force": {
+    "group": "units",
+    "file": "aa_missile_squad_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "aa_missile_squad_blue_force": {
+    "group": "units",
+    "file": "aa_missile_squad_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "aa_missile_vehicle_red_force": {
+    "group": "units",
+    "file": "aa_missile_vehicle_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "aa_missile_vehicle_blue_force": {
+    "group": "units",
+    "file": "aa_missile_vehicle_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "ugv_red_force": {
+    "group": "units",
+    "file": "ugv_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "ugv_blue_force": {
+    "group": "units",
+    "file": "ugv_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "minelayer_red_force": {
+    "group": "units",
+    "file": "minelayer_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "minelayer_blue_force": {
+    "group": "units",
+    "file": "minelayer_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "space_recon_red_force": {
+    "group": "units",
+    "file": "space_recon_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "space_recon_blue_force": {
+    "group": "units",
+    "file": "space_recon_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  },
+  "roadblock": {
+    "group": "facilities",
+    "file": "roadblock.png",
+    "transparent": true,
+    "variant": null
+  },
+  "minefield": {
+    "group": "facilities",
+    "file": "minefield.png",
+    "transparent": true,
+    "variant": null
+  },
+  "works": {
+    "group": "facilities",
+    "file": "works.png",
+    "transparent": true,
+    "variant": null
+  },
+  "indirect_zone": {
+    "group": "facilities",
+    "file": "indirect_zone.png",
+    "transparent": true,
+    "variant": null
+  },
+  "control_point": {
+    "group": "facilities",
+    "file": "control_point.png",
+    "transparent": true,
+    "variant": null
+  },
+  "selection_ring": {
+    "group": "ui",
+    "file": "selection_ring.png",
+    "transparent": true,
+    "variant": null
+  },
+  "move_arrow": {
+    "group": "ui",
+    "file": "move_arrow.png",
+    "transparent": true,
+    "variant": null
+  },
+  "fire_marker": {
+    "group": "ui",
+    "file": "fire_marker.png",
+    "transparent": true,
+    "variant": null
+  },
+  "minesweeper_red_force": {
+    "group": "units",
+    "file": "minesweeper_red_force.png",
+    "transparent": true,
+    "variant": "red_force"
+  },
+  "minesweeper_blue_force": {
+    "group": "units",
+    "file": "minesweeper_blue_force.png",
+    "transparent": true,
+    "variant": "blue_force"
+  }
+}

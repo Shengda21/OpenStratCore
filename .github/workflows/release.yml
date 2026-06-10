@@ -1,0 +1,88 @@
+# On a version tag (vX.Y.Z): build the prebuilt playable web bundle (wasm + static dist) and a trained
+# RL baseline checkpoint, and attach both to the GitHub Release. End users download the zip and serve it
+# statically — no Rust/Node/Python toolchain needed.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write   # create the release + upload assets
+
+jobs:
+  web-bundle:
+    name: Prebuilt web demo (wasm + static dist)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Build the wasm engine
+        run: wasm-pack build crates/openstratcore-wasm --target web --out-dir web/src/engine/pkg
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build the static bundle (self-contained dist/)
+        run: |
+          cd web
+          npm ci
+          npm run build
+
+      - name: Zip dist
+        run: |
+          cd web/dist
+          zip -r "$GITHUB_WORKSPACE/openstratcore-web-${GITHUB_REF_NAME}.zip" .
+
+      - name: Attach to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: openstratcore-web-${{ github.ref_name }}.zip
+          body: |
+            **Prebuilt playable web demo** — no toolchain required.
+            1. Download `openstratcore-web-${{ github.ref_name }}.zip` and unzip.
+            2. `python -m http.server -d openstratcore-web-${{ github.ref_name }} 8000`
+            3. Open http://localhost:8000 — play a live wasm match, edit maps/scenarios/rules, view replays.
+
+  rl-checkpoint:
+    name: Trained RL baseline (rl_duel, beats ScriptedCommander)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python deps + build the engine extension
+        run: |
+          pip install "numpy>=1.26" "gymnasium>=0.29" "torch>=2.2" maturin
+          maturin build --out wheels -m crates/openstratcore-py/Cargo.toml
+          pip install --force-reinstall wheels/*.whl
+
+      - name: Train the rl_duel baseline (seed 1, deterministic → ~100% vs ScriptedCommander)
+        run: |
+          cd python
+          PYTHONPATH=. python examples/selfplay_ppo.py \
+            --backend rust --opponent scripted --scenario rl_duel.scenario.json \
+            --total-steps 60000 --seed 1 --ent-coef 0.02 --save runs/rl_duel_baseline
+          cp runs/rl_duel_baseline/selfplay_ppo.pt "$GITHUB_WORKSPACE/rl_duel_baseline-${GITHUB_REF_NAME}.pt"
+
+      - name: Attach to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: rl_duel_baseline-${{ github.ref_name }}.pt
+          body: |
+            **Trained RL baseline** — PPO red policy for `scenarios/rl_duel.scenario.json` that beats the
+            in-repo ScriptedCommander (~100% over the last 20 episodes). Reproduce with the command in
+            `docs/RL.md`. Load via `ActorCritic(...).load_state_dict(torch.load(...))`.

@@ -1,0 +1,1621 @@
+{
+  "header": {
+    "format": "openstratcore.replay",
+    "version": 1,
+    "redName": "Red Battalion",
+    "blueName": "Blue Company",
+    "mapFile": "demo_valley.map.json",
+    "scenarioFile": "demo_skirmish.scenario.json",
+    "rulesFile": "rules.default.json",
+    "seed": 1,
+    "createdAt": "2026-06-08T02:08:59.880958+00:00",
+    "durationSeconds": 60.0
+  },
+  "commands": [
+    {
+      "t": 0.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 0.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 0.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 0.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 5.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 5.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 5.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 5.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 10.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 10.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 10.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 10.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 15.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 15.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 15.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 15.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 20.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 20.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 20.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 20.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 25.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 25.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 25.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 25.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 30.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 30.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 30.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 30.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 35.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 35.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 35.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 35.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 40.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 40.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 40.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 40.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 45.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 45.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 45.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 45.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 50.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 50.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 50.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 50.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 55.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 55.0,
+      "side": "red",
+      "command": {
+        "op": "move_to",
+        "unitId": "R-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 55.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-I1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    },
+    {
+      "t": 55.0,
+      "side": "blue",
+      "command": {
+        "op": "move_to",
+        "unitId": "B-T1",
+        "target": {
+          "q": 2,
+          "r": 1
+        }
+      }
+    }
+  ],
+  "snapshots": [
+    {
+      "t": 0.0,
+      "state": {
+        "clock": 0,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 0,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "normal",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 0,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 4,
+              "r": 0
+            },
+            "side": "blue",
+            "state": "stopped",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 0,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "normal",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 0,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "stopped",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 5.0,
+      "state": {
+        "clock": 500,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 4000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 4,
+              "r": 0
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 10.0,
+      "state": {
+        "clock": 1000,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 4000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 4,
+              "r": 0
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 15.0,
+      "state": {
+        "clock": 1500,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 4000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 4,
+              "r": 0
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 20.0,
+      "state": {
+        "clock": 2000,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 4000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 4,
+              "r": 0
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 25.0,
+      "state": {
+        "clock": 2500,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 4000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 4,
+              "r": 0
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 30.0,
+      "state": {
+        "clock": 3000,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 4000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 4,
+              "r": 0
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 35.0,
+      "state": {
+        "clock": 3500,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 4000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 4,
+              "r": 0
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 40.0,
+      "state": {
+        "clock": 4000,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 8000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 3,
+              "r": 1
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 45.0,
+      "state": {
+        "clock": 4500,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 8000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 3,
+              "r": 1
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 50.0,
+      "state": {
+        "clock": 5000,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 8000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 3,
+              "r": 1
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 55.0,
+      "state": {
+        "clock": 5500,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 8000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 3,
+              "r": 1
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    },
+    {
+      "t": 60.0,
+      "state": {
+        "clock": 6000,
+        "control": {
+          "CP1": null
+        },
+        "units": {
+          "B-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 4,
+            "id": "B-I1",
+            "pos": {
+              "q": 4,
+              "r": 2
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "B-T1": {
+            "alive": true,
+            "armor": "medium",
+            "busy_until": 8000,
+            "facing": 4,
+            "id": "B-T1",
+            "pos": {
+              "q": 3,
+              "r": 1
+            },
+            "side": "blue",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          },
+          "R-I1": {
+            "alive": true,
+            "armor": "none",
+            "busy_until": 14400,
+            "facing": 1,
+            "id": "R-I1",
+            "pos": {
+              "q": 0,
+              "r": 1
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 3,
+            "unit_type": "infantry",
+            "weapon_state": "deployed"
+          },
+          "R-T1": {
+            "alive": true,
+            "armor": "composite",
+            "busy_until": 8000,
+            "facing": 1,
+            "id": "R-T1",
+            "pos": {
+              "q": 0,
+              "r": 0
+            },
+            "side": "red",
+            "state": "moving",
+            "suppressed_until": 0,
+            "teams": 4,
+            "unit_type": "tank",
+            "weapon_state": "deployed"
+          }
+        }
+      }
+    }
+  ]
+}
