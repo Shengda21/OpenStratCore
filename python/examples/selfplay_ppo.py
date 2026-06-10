@@ -48,6 +48,8 @@ def parse_args():
     p.add_argument("--vf-coef", type=float, default=0.5)
     p.add_argument("--max-grad-norm", type=float, default=0.5)
     p.add_argument("--save", default="runs", help="checkpoint dir")
+    p.add_argument("--scenario", default="demo_skirmish.scenario.json",
+                   help="scenario file under scenarios/ (rust backend only; mock ignores it)")
     return p.parse_args()
 
 
@@ -87,7 +89,8 @@ def main():
     np.random.seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    env = make_env(backend=args.backend, seed=args.seed, opponent=args.opponent)
+    env = make_env(backend=args.backend, seed=args.seed, opponent=args.opponent,
+                   scenario_file=args.scenario)
     learners = list(env.learners)   # agents the policy controls: ['red','blue'] self-play, ['red'] scripted
     n_agents = len(learners)        # the batch/parallel dimension (2 self-play, 1 vs scripted)
     print(f"backend={args.backend} opponent={args.opponent} learners={learners}")

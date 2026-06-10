@@ -28,7 +28,8 @@ class MiaosuanParallelEnv(_Base):
     metadata = {"name": "openstratcore_commander_v0"}
 
     def __init__(self, backend: str = "mock", scenario_dir: str | None = None,
-                 seed: int = 0, max_ticks: int = 120, opponent: str = "self"):
+                 seed: int = 0, max_ticks: int = 120, opponent: str = "self",
+                 scenario_file: str = "demo_skirmish.scenario.json"):
         self.backend = backend
         self.possible_agents = list(AGENTS)
         self.agents = list(AGENTS)
@@ -43,7 +44,8 @@ class MiaosuanParallelEnv(_Base):
             self._impl = MockMatch(max_ticks=max_ticks)
             self.learners = list(AGENTS)  # mock is self-play only; opponent is ignored
         elif backend == "rust":
-            self._impl = _RustBackend(scenario_dir, seed, max_ticks, opponent=opponent)
+            self._impl = _RustBackend(scenario_dir, seed, max_ticks, opponent=opponent,
+                                      scenario_file=scenario_file)
             # opponent="scripted" -> blue is driven by the in-repo ScriptedCommander, so only red learns
             # (no longer pure symmetric self-play). "self" -> both sides share the policy as before.
             self.learners = ["red"] if opponent == "scripted" else list(AGENTS)
@@ -87,7 +89,8 @@ class _RustBackend:
     projection (rule #5); reward shaping reads the god-view `snapshot()` (a training signal, not an
     agent view). Build the extension first: `make py-dev`."""
 
-    def __init__(self, scenario_dir, seed, max_ticks, opponent: str = "self"):
+    def __init__(self, scenario_dir, seed, max_ticks, opponent: str = "self",
+                 scenario_file: str = "demo_skirmish.scenario.json"):
         import openstratcore_core  # built from crates/openstratcore-py
 
         # Fixed scripted opponent (P1): drive blue with the in-repo ScriptedCommander so red trains
@@ -108,7 +111,7 @@ class _RustBackend:
             raise ValueError(f"unknown opponent {opponent!r} (use 'self' or 'scripted')")
 
         root = Path(scenario_dir or Path(__file__).resolve().parents[2] / "scenarios")
-        scenario = json.loads((root / "demo_skirmish.scenario.json").read_text(encoding="utf-8"))
+        scenario = json.loads((root / scenario_file).read_text(encoding="utf-8"))
         map_json = (root / "maps" / scenario["map"]).read_text(encoding="utf-8")
         rules_root = Path(__file__).resolve().parents[2] / "config"
         rules_json = (rules_root / scenario.get("rules", "rules.default.json")).read_text(
