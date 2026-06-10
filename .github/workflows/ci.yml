@@ -1,0 +1,49 @@
+# Full regression gate (`make verify-all`) on every push / PR to main.
+# Pure Rust + Python — no Claude/Codex credentials needed (see docs/CI.md).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel superseded runs on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-all:
+    name: make verify-all (Rust core + Python harness)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust stable (+ clippy, rustfmt)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache cargo build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python gate deps
+        # jsonschema → validate · numpy/gymnasium/torch → selfplay-smoke · pytest → test
+        # maturin builds the PyO3 engine extension so sim-smoke + integration run for real.
+        run: pip install jsonschema "numpy>=1.26" "gymnasium>=0.29" "torch>=2.2" pytest maturin
+
+      - name: Build & install the PyO3 engine extension
+        run: |
+          maturin build --out dist -m crates/openstratcore-py/Cargo.toml
+          pip install --force-reinstall dist/*.whl
+
+      - name: make verify-all
+        # fmt-check → build → lint (clippy -D warnings) → test → validate →
+        # selfplay-smoke → sim-smoke → integration
+        run: make verify-all

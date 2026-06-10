@@ -31,14 +31,30 @@ tools/                 Codex 复审/生成包装脚本、gpt-image 出图+抠底
 docs/                  ARCHITECTURE / WORKFLOWS / ROADMAP / RESOURCES / rules(规则库与覆盖清单)
 ```
 
-## 快速开始
-1. 读 `docs/WORKFLOWS.md`（开发动作的真源）与 `CLAUDE.md`（给 Claude Code 的规约）。
-2. 装工具链：Rust(stable) + `maturin`、Node 20+、Python 3.11+、`codex` CLI、`rembg`(抠底)。
-3. 起步用 RL 自博弈骨架冒烟（**纯 Python mock 后端，开箱即跑**）：
-   ```bash
-   cd python && pip install -e . && python examples/selfplay_ppo.py --backend mock --total-steps 20000
-   ```
-4. 在 Claude Code 里用工作流推进开发：`/add-rule`、`/new-scenario`、`/gen-art`、`/selfplay`、`/codex-review` …
+## 快速开始（克隆后本地部署）
+按用途选一条路——三条彼此独立，按所需工具链由轻到重：
+
+**① 库 / RL 研究（零额外工具链，开箱即跑）** — 仅需 **Python 3.11+**：
+```bash
+cd python && pip install -e .          # 纯 Python（hatchling），不编译 Rust
+python examples/selfplay_ppo.py --backend mock --total-steps 20000   # 自博弈冒烟
+```
+`mock` 是纯 Python 参考后端；要用确定性 **Rust 内核**驱动环境，见 ②。
+
+**② 完整引擎（确定性 Rust 内核 + Python 绑定）** — 需 **Rust(stable)** + Python + `make`：
+```bash
+pip install maturin
+maturin develop -m crates/openstratcore-py/Cargo.toml   # 把内核编进当前 Python 环境
+make verify-all                                         # 全门回归（CI 同款，应全绿）
+```
+
+**③ 浏览器可玩 demo（Web 前端 + wasm 内核）** — 需 Rust + `wasm-pack` + **Node 20+**：
+> 普通玩家可直接下 **GitHub Releases** 里的预构建包，`python -m http.server` 即开即玩，无需工具链。
+> 自行构建：`wasm-pack build crates/openstratcore-wasm --target web --out-dir web/src/engine/pkg`，
+> 再 `cd web && npm install && npm run build`（构建须在**无空格路径**下进行）。详见 `web/`。
+
+开发动作（加规则 `/add-rule`、出图 `/gen-art`、复盘、`/codex-review` 等）见 `docs/WORKFLOWS.md`；
+给 AI 助手的规约见 `CLAUDE.md`。
 
 ## 成本与账号（重要）
 你是 Anthropic + OpenAI 双 Max 会员，因此**默认全程走订阅，不需要任何 API Key**：
