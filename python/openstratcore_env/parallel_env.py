@@ -24,7 +24,7 @@ except Exception:  # pragma: no cover
         pass
 
 
-class MiaosuanParallelEnv(_Base):
+class CommanderParallelEnv(_Base):
     metadata = {"name": "openstratcore_commander_v0"}
 
     def __init__(self, backend: str = "mock", scenario_dir: str | None = None,
@@ -324,5 +324,5 @@ class _RustBackend:
         return obs, rewards, terms, truncs, infos
 
 
-def make_env(backend: str = "mock", **kwargs) -> MiaosuanParallelEnv:
-    return MiaosuanParallelEnv(backend=backend, **kwargs)
+def make_env(backend: str = "mock", **kwargs) -> CommanderParallelEnv:
+    return CommanderParallelEnv(backend=backend, **kwargs)

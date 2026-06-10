@@ -201,7 +201,7 @@ class AnthropicApiCommander:
         import anthropic
         self.side = side
         self.client = anthropic.Anthropic()
-        self.model = os.environ.get("MIAOSUAN_ANTHROPIC_MODEL", "claude-opus-4-8")
+        self.model = os.environ.get("OPENSTRATCORE_ANTHROPIC_MODEL", "claude-opus-4-8")
         self.tool = {"name": "submit_orders",
                      "description": "Submit this side's orders for the current decision tick.",
                      "input_schema": tool_schema()}
@@ -231,7 +231,7 @@ class OpenAiApiCommander:
         from openai import OpenAI
         self.side = side
         self.client = OpenAI()
-        self.model = os.environ.get("MIAOSUAN_OPENAI_MODEL", "gpt-5.5")
+        self.model = os.environ.get("OPENSTRATCORE_OPENAI_MODEL", "gpt-5.5")
         self.tools = [{"type": "function", "function": {
             "name": "submit_orders",
             "description": "Submit this side's orders for the current decision tick.",

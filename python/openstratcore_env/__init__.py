@@ -7,6 +7,6 @@ Two backends:
 The env exposes a PettingZoo ParallelEnv-compatible API (two agents: "red", "blue").
 """
 
-from .parallel_env import MiaosuanParallelEnv, make_env
+from .parallel_env import CommanderParallelEnv, make_env
 
-__all__ = ["MiaosuanParallelEnv", "make_env"]
+__all__ = ["CommanderParallelEnv", "make_env"]
