@@ -25,7 +25,14 @@ jobs:
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
       - name: Build the wasm engine
-        run: wasm-pack build crates/openstratcore-wasm --target web --out-dir web/src/engine/pkg
+        # wasm-pack resolves --out-dir relative to the CRATE dir (0.13.x) or CWD (newer), so build to a
+        # fixed crate-local `pkg` and relocate it to where the web app imports it (web/src/engine/pkg).
+        run: |
+          wasm-pack build crates/openstratcore-wasm --target web --out-dir pkg
+          rm -rf web/src/engine/pkg
+          mkdir -p web/src/engine
+          mv crates/openstratcore-wasm/pkg web/src/engine/pkg
+          test -f web/src/engine/pkg/openstratcore_wasm.d.ts  # fail loudly if the pkg isn't placed right
 
       - uses: actions/setup-node@v4
         with:

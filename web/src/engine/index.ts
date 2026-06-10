@@ -8,8 +8,7 @@ let ready: Promise<void> | null = null;
 
 // Initialize the wasm module exactly once (idempotent). Await before constructing an Engine.
 export function initEngine(): Promise<void> {
-  if (!ready) ready = init().then(() => undefined);
-  return ready;
+  return (ready ??= init().then(() => undefined));
 }
 
 export { Engine };
