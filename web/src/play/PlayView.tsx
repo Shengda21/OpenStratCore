@@ -1,33 +1,36 @@
 import { useEffect, useRef, useState } from "react";
-import { Application } from "pixi.js";
-import { HexRenderer, type SnapUnit } from "../render/HexRenderer";
+import { Application, Rectangle } from "pixi.js";
+import { HexRenderer, pixelToAxial, type SnapUnit } from "../render/HexRenderer";
 import { initEngine, Engine } from "../engine";
 
-// A live, watchable match on the built-in demo scenario: the SAME deterministic Rust kernel runs in the
-// browser via wasm. Both sides are driven by a small in-browser scripted commander (advance to the
-// objective; stop & fire when an enemy is close), so pressing 前进 actually plays a battle out to a
-// winner. Rendering can show the god view (全局) or either side's fog-of-war projection (rule #5).
-const SCENARIO_URL = "/scenarios/rl_duel.scenario.json";
+// A live match on the built-in combined-arms scenario — the SAME deterministic Rust kernel runs in the
+// browser via wasm. Two modes: 观战 (both sides driven by a small in-browser scripted commander) and
+// 我指挥红方 (you click to order the red units; the AI drives blue). Views can show the god view (全局)
+// or either side's fog-of-war projection (rule #5).
+const SCENARIO_URL = "/scenarios/rl_clash.scenario.json";
 const CANVAS_W = 780;
 const CANVAS_H = 460;
 const HEX = 36;
-const FIRE_HEXES = 2; // close enough to stop & engage instead of advancing
+const FIRE_HEXES = 3; // close enough to stop & engage instead of advancing
+const HUMAN: Side = "red"; // the side you command in 我指挥 mode
 
 type Side = "red" | "blue";
 type ViewMode = "all" | Side;
+type Mode = "watch" | "human";
 interface ObsUnit {
   id: string; at?: { q: number; r: number }; type?: string; teams?: number;
   state?: string; weaponState?: string; busyUntil?: number;
 }
 interface MapHex { q: number; r: number; elevation: number; terrain: string; }
-interface GameMap { hexes: MapHex[]; }
+interface GameMap { hexes: MapHex[] }
+interface Order { kind: "move" | "attack"; q?: number; r?: number; targetId?: string }
 
 function hexDist(a: { q: number; r: number }, b: { q: number; r: number }): number {
   const dq = a.q - b.q, dr = a.r - b.r;
   return (Math.abs(dq) + Math.abs(dr) + Math.abs(dq + dr)) / 2;
 }
 
-interface Status { clock: number; owner: string | null; red: number; blue: number; redTeams: number; blueTeams: number; winner: string | null; }
+interface Status { clock: number; owner: string | null; red: number; blue: number; redTeams: number; blueTeams: number; winner: string | null }
 const ZERO: Status = { clock: 0, owner: null, red: 0, blue: 0, redTeams: 0, blueTeams: 0, winner: null };
 
 export function PlayView() {
@@ -40,15 +43,22 @@ export function PlayView() {
   const loadoutRef = useRef<Record<string, string[]>>({});
   const cfgRef = useRef<{ map: string; scenario: string; rules: string } | null>(null);
   const stepRef = useRef(5);
+  // interaction refs (read by the once-attached pointer handler, so no stale closures)
+  const modeRef = useRef<Mode>("watch");
+  const selectedRef = useRef<string | null>(null);
+  const ordersRef = useRef<Record<string, Order>>({});
+  const renderRef = useRef<() => void>(() => {});
 
   const [ready, setReady] = useState(false);
   const [hasEngine, setHasEngine] = useState(false);
   const [view, setView] = useState<ViewMode>("all");
+  const [mode, setMode] = useState<Mode>("watch");
   const [auto, setAuto] = useState(false);
+  const [hint, setHint] = useState<string>("");
   const [status, setStatus] = useState<Status>(ZERO);
   const [error, setError] = useState<string | null>(null);
 
-  // Mount the PIXI canvas + renderer once (and load the sprite art pack).
+  // Mount the PIXI canvas + renderer once; make the board clickable for 我指挥 mode.
   useEffect(() => {
     let app: Application | null = null;
     let disposed = false;
@@ -59,6 +69,9 @@ export function PlayView() {
       appRef.current = app;
       rendererRef.current = new HexRenderer(app, HEX);
       hostRef.current?.appendChild(app.canvas);
+      app.stage.eventMode = "static";
+      app.stage.hitArea = new Rectangle(-5000, -5000, 10000, 10000);
+      app.stage.on("pointertap", (e) => handleTap(e.global.x, e.global.y));
       await rendererRef.current.loadSprites();
       if (disposed) { app.destroy(true); return; }
       setReady(true);
@@ -66,7 +79,14 @@ export function PlayView() {
     return () => { disposed = true; if (app) app.destroy(true); appRef.current = null; rendererRef.current = null; };
   }, []);
 
-  // Build the engine from the built-in scenario once PIXI is ready.
+  async function buildEngine(seed: number) {
+    const cfg = cfgRef.current; if (!cfg) return;
+    ordersRef.current = {}; selectedRef.current = null; setHint("");
+    engineRef.current = new Engine(cfg.map, cfg.scenario, cfg.rules, seed);
+    render();
+  }
+
+  // Load the built-in scenario once PIXI is ready.
   useEffect(() => {
     if (!ready) return;
     let cancelled = false;
@@ -88,18 +108,21 @@ export function PlayView() {
         const obj = scenario.objectives?.[0];
         objRef.current = obj ? { id: obj.id, q: obj.at.q, r: obj.at.r } : null;
         cfgRef.current = { map: mapJson, scenario: scenarioJson, rules: rulesJson };
-        // center the board in the canvas
         const off = rendererRef.current!.centerOffset(map.hexes, CANVAS_W, CANVAS_H);
         appRef.current!.stage.position.set(off.x, off.y);
         engineRef.current = new Engine(mapJson, scenarioJson, rulesJson, 1);
         setHasEngine(true);
         render();
-      } catch (e) {
-        setError(`引擎初始化失败: ${(e as Error).message}`);
-      }
+      } catch (e) { setError(`引擎初始化失败: ${(e as Error).message}`); }
     })();
     return () => { cancelled = true; };
   }, [ready]);
+
+  function snapUnits(): (SnapUnit & { teams?: number })[] {
+    const eng = engineRef.current; if (!eng) return [];
+    const snap = JSON.parse(eng.snapshot()) as { units: Record<string, SnapUnit & { teams?: number }> };
+    return Object.values(snap.units);
+  }
 
   function computeStatus(): Status {
     const eng = engineRef.current; if (!eng) return ZERO;
@@ -118,112 +141,157 @@ export function PlayView() {
     return { clock: eng.clockSeconds(), owner, red, blue, redTeams, blueTeams, winner };
   }
 
-  // Draw the current frame for the selected view (god view = snapshot; side view = that side's fog-of-war).
   function render() {
     const eng = engineRef.current, r = rendererRef.current, map = mapRef.current, obj = objRef.current;
     if (!eng || !r || !map) return;
     let units: SnapUnit[];
-    if (view === "all") {
-      const snap = JSON.parse(eng.snapshot()) as { units: Record<string, SnapUnit> };
-      units = Object.values(snap.units);
-    } else {
+    if (view === "all") units = snapUnits();
+    else {
       const obs = JSON.parse(eng.observe(view)) as { ownUnits?: ObsUnit[]; enemyUnits?: ObsUnit[] };
       const other: Side = view === "red" ? "blue" : "red";
       const toSnap = (u: ObsUnit, s: Side): SnapUnit | null => (u && u.at ? { id: u.id, side: s, pos: u.at, unit_type: u.type, teams: u.teams } : null);
-      units = [
-        ...(obs.ownUnits ?? []).map((u) => toSnap(u, view)),
-        ...(obs.enemyUnits ?? []).map((u) => toSnap(u, other)),
-      ].filter((u): u is SnapUnit => u !== null);
+      units = [...(obs.ownUnits ?? []).map((u) => toSnap(u, view)), ...(obs.enemyUnits ?? []).map((u) => toSnap(u, other))].filter((u): u is SnapUnit => u !== null);
     }
     r.clear();
     r.drawMap(map);
     const st = computeStatus();
     if (obj) r.drawObjective({ q: obj.q, r: obj.r }, st.owner);
+    if (modeRef.current === "human" && selectedRef.current) {
+      const sel = snapUnits().find((u) => u.id === selectedRef.current && u.alive !== false);
+      if (sel) r.drawSelection(sel.pos);
+    }
     r.drawUnits(units);
     setStatus(st);
   }
+  renderRef.current = render;
 
-  // One scripted decision for a unit (from its side's fog-of-war view): fire a nearby enemy, else
-  // advance to the objective (and seize it when standing on it).
-  function decide(u: ObsUnit, enemies: ObsUnit[], clock: number): object | null {
+  // AI commander (used for both sides in 观战, and for blue in 我指挥).
+  function aiCmd(u: ObsUnit, enemies: ObsUnit[], clock: number): object | null {
     const obj = objRef.current; if (!u.at || !obj) return null;
-    if ((u.busyUntil ?? 0) > clock) return null; // mid-transition; let it finish
+    if ((u.busyUntil ?? 0) > clock) return null;
     let near: ObsUnit | null = null, nd = Infinity;
     for (const e of enemies) { if (!e.at) continue; const d = hexDist(u.at, e.at); if (d < nd) { nd = d; near = e; } }
     const weapon = loadoutRef.current[u.type ?? ""]?.[0];
     if (near && near.at && nd <= FIRE_HEXES && weapon) {
       if (u.state !== "stopped") return { op: "stop", unitId: u.id };
       if ((u.weaponState ?? "deployed") === "deployed") return { op: "fire_direct", unitId: u.id, weapon, targetUnit: near.id };
-      return null; // deploying
+      return null;
     }
     if (u.at.q === obj.q && u.at.r === obj.r) return { op: "capture", unitId: u.id };
     return { op: "move_to", unitId: u.id, target: { q: obj.q, r: obj.r } };
   }
 
-  // Advance one decision tick: both sides issue scripted orders (from their own fog-of-war), then step.
+  // Translate a player's standing order for one red unit into this tick's engine command.
+  function humanCmd(u: ObsUnit, order: Order, enemies: ObsUnit[], clock: number): object | null {
+    const obj = objRef.current; if (!u.at) return null;
+    if ((u.busyUntil ?? 0) > clock) return null;
+    const weapon = loadoutRef.current[u.type ?? ""]?.[0];
+    if (order.kind === "attack") {
+      const tgt = enemies.find((e) => e.id === order.targetId && e.at);
+      if (tgt && tgt.at) {
+        const d = hexDist(u.at, tgt.at);
+        if (d <= 3 && weapon) {
+          if (u.state !== "stopped") return { op: "stop", unitId: u.id };
+          if ((u.weaponState ?? "deployed") === "deployed") return { op: "fire_direct", unitId: u.id, weapon, targetUnit: tgt.id };
+          return null;
+        }
+        return { op: "move_to", unitId: u.id, target: { q: tgt.at.q, r: tgt.at.r } }; // close in
+      }
+      return null; // target no longer visible/alive — hold
+    }
+    // move order
+    const tq = order.q ?? u.at.q, tr = order.r ?? u.at.r;
+    if (u.at.q === tq && u.at.r === tr) {
+      if (obj && tq === obj.q && tr === obj.r) return { op: "capture", unitId: u.id };
+      return null; // arrived
+    }
+    return { op: "move_to", unitId: u.id, target: { q: tq, r: tr } };
+  }
+
   function stepOnce() {
     const eng = engineRef.current; if (!eng) return;
     if (computeStatus().winner) return;
     const t = eng.clockSeconds();
-    for (const side of ["red", "blue"] as Side[]) {
-      const obs = JSON.parse(eng.observe(side)) as { ownUnits?: ObsUnit[]; enemyUnits?: ObsUnit[] };
-      for (const u of obs.ownUnits ?? []) {
-        const cmd = decide(u, obs.enemyUnits ?? [], t);
-        if (cmd) { try { eng.submit(side, JSON.stringify(cmd), t); } catch { /* illegal order = no-op */ } }
+    const submit = (side: Side, cmd: object | null) => { if (cmd) { try { eng.submit(side, JSON.stringify(cmd), t); } catch { /* illegal = no-op */ } } };
+    if (modeRef.current === "watch") {
+      for (const side of ["red", "blue"] as Side[]) {
+        const o = JSON.parse(eng.observe(side)) as { ownUnits?: ObsUnit[]; enemyUnits?: ObsUnit[] };
+        for (const u of o.ownUnits ?? []) submit(side, aiCmd(u, o.enemyUnits ?? [], t));
       }
+    } else {
+      const oh = JSON.parse(eng.observe(HUMAN)) as { ownUnits?: ObsUnit[]; enemyUnits?: ObsUnit[] };
+      for (const u of oh.ownUnits ?? []) { const ord = ordersRef.current[u.id]; if (ord) submit(HUMAN, humanCmd(u, ord, oh.enemyUnits ?? [], t)); }
+      const ai: Side = HUMAN === "red" ? "blue" : "red";
+      const oa = JSON.parse(eng.observe(ai)) as { ownUnits?: ObsUnit[]; enemyUnits?: ObsUnit[] };
+      for (const u of oa.ownUnits ?? []) submit(ai, aiCmd(u, oa.enemyUnits ?? [], t));
     }
     eng.step(stepRef.current);
     render();
   }
 
-  // Auto-play: tick every ~900ms until a winner is decided.
-  useEffect(() => {
-    if (!auto || !hasEngine) return;
-    if (status.winner) { setAuto(false); return; }
-    const h = setInterval(stepOnce, 900);
-    return () => clearInterval(h);
-  }, [auto, hasEngine, status.winner]);
-
-  // Re-draw when the view (全局/红/蓝) changes.
-  useEffect(() => { if (hasEngine) render(); /* eslint-disable-next-line */ }, [view]);
-
-  function newMatch() {
-    const cfg = cfgRef.current; if (!cfg) return;
-    setAuto(false);
-    const seed = Math.floor(performance.now()) % 100000; // a fresh game each time
-    engineRef.current = new Engine(cfg.map, cfg.scenario, cfg.rules, seed);
+  // Click on the board (我指挥 mode): pick your unit, or order the picked unit to move/attack.
+  function handleTap(gx: number, gy: number) {
+    const app = appRef.current, eng = engineRef.current;
+    if (modeRef.current !== "human" || !app || !eng || computeStatus().winner) return;
+    const local = app.stage.toLocal({ x: gx, y: gy });
+    const hex = pixelToAxial(local.x, local.y, HEX);
+    const here = snapUnits().find((u) => u.alive !== false && u.pos.q === hex.q && u.pos.r === hex.r);
+    if (here && here.side === HUMAN) {
+      selectedRef.current = here.id;
+      setHint(`已选 ${here.id}：点空格→前往，点敌军→攻击`);
+    } else if (selectedRef.current) {
+      const sel = selectedRef.current;
+      if (here && here.side !== HUMAN) { ordersRef.current[sel] = { kind: "attack", targetId: here.id }; setHint(`命令 ${sel} 攻击 ${here.id} → 点「前进」执行`); }
+      else { ordersRef.current[sel] = { kind: "move", q: hex.q, r: hex.r }; setHint(`命令 ${sel} 前往 (${hex.q},${hex.r}) → 点「前进」执行`); }
+    } else {
+      setHint("先点一个你的单位（红圈）");
+    }
     render();
   }
 
+  useEffect(() => {
+    if (mode !== "watch" || !auto || !hasEngine) return;
+    if (status.winner) { setAuto(false); return; }
+    const h = setInterval(stepOnce, 900);
+    return () => clearInterval(h);
+  }, [auto, hasEngine, status.winner, mode]);
+
+  useEffect(() => { if (hasEngine) render(); /* eslint-disable-next-line */ }, [view]);
+
+  function switchMode(m: Mode) {
+    modeRef.current = m; setMode(m); setAuto(false);
+    if (hasEngine) buildEngine(1); // fresh game for the chosen mode
+  }
+  function newMatch() { setAuto(false); buildEngine(Math.floor(performance.now()) % 100000); }
+
   const sideTag = (s: string | null) => (s === "red" ? "红方" : s === "blue" ? "蓝方" : "中立");
-  const winBanner = status.winner
-    ? `${status.winner === "red" ? "🟥 红方胜利" : "🟦 蓝方胜利"} — ${status.owner ? "夺控制胜" : "歼灭制胜"}`
-    : null;
+  const winBanner = status.winner ? `${status.winner === "red" ? "🟥 红方胜利" : "🟦 蓝方胜利"} — ${status.owner ? "夺控制胜" : "歼灭制胜"}` : null;
 
   return (
     <div style={{ marginTop: 16, display: "flex", gap: 20, flexWrap: "wrap" }}>
       <div>
         <h2 style={{ margin: "0 0 8px" }}>对局 · 实时六角格兵棋（浏览器内直跑 Rust 内核）</h2>
         {error && <pre style={{ color: "#ff9a9a", whiteSpace: "pre-wrap" }}>{error}</pre>}
-        <div ref={hostRef} style={{ width: CANVAS_W, height: CANVAS_H, border: "1px solid #243042", borderRadius: 6 }} />
+        <div style={{ marginBottom: 8, display: "flex", gap: 8, alignItems: "center" }}>
+          <span style={{ opacity: 0.8 }}>模式：</span>
+          <button onClick={() => switchMode("watch")} aria-pressed={mode === "watch"} disabled={!hasEngine}>👁 观战 (AI 对 AI)</button>
+          <button onClick={() => switchMode("human")} aria-pressed={mode === "human"} disabled={!hasEngine}>🎮 我指挥红方</button>
+        </div>
+        <div ref={hostRef} style={{ width: CANVAS_W, height: CANVAS_H, border: "1px solid #243042", borderRadius: 6, cursor: mode === "human" ? "pointer" : "default" }} />
         <div style={{ marginTop: 10, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
           <button onClick={stepOnce} disabled={!hasEngine || !!status.winner}>前进 {stepRef.current}s</button>
-          <button onClick={() => setAuto((a) => !a)} disabled={!hasEngine || !!status.winner}>
-            {auto ? "⏸ 暂停" : "▶ 自动推进"}
-          </button>
+          {mode === "watch" && <button onClick={() => setAuto((a) => !a)} disabled={!hasEngine || !!status.winner}>{auto ? "⏸ 暂停" : "▶ 自动推进"}</button>}
           <button onClick={newMatch} disabled={!hasEngine}>↻ 新对局</button>
           <span style={{ marginLeft: 8, opacity: 0.8 }}>视角：</span>
           <button onClick={() => setView("all")} aria-pressed={view === "all"} disabled={!hasEngine}>全局</button>
           <button onClick={() => setView("red")} aria-pressed={view === "red"} disabled={!hasEngine}>红方迷雾</button>
           <button onClick={() => setView("blue")} aria-pressed={view === "blue"} disabled={!hasEngine}>蓝方迷雾</button>
         </div>
+        {mode === "human" && <div style={{ marginTop: 8, minHeight: 20, color: "#ffe066" }}>{hint || "点你的单位（红圈）选中，再点格子下令；点「前进」执行一拍。"}</div>}
       </div>
 
       <aside style={{ width: 300, fontSize: 14, lineHeight: 1.6 }}>
-        <div style={{
-          padding: "10px 12px", borderRadius: 6, marginBottom: 12,
-          background: winBanner ? "#1d2b1d" : "#141c26", border: "1px solid #243042",
-        }}>
+        <div style={{ padding: "10px 12px", borderRadius: 6, marginBottom: 12, background: winBanner ? "#1d2b1d" : "#141c26", border: "1px solid #243042" }}>
           <div style={{ fontWeight: 700, marginBottom: 4 }}>战况</div>
           <div>时钟：<b>{status.clock.toFixed(0)}s</b></div>
           <div>控制点：<b style={{ color: status.owner === "red" ? "#ff8a8a" : status.owner === "blue" ? "#8ab0ff" : "#e2b53e" }}>{sideTag(status.owner)}</b></div>
@@ -234,16 +302,24 @@ export function PlayView() {
 
         <div style={{ padding: "10px 12px", borderRadius: 6, background: "#141c26", border: "1px solid #243042" }}>
           <div style={{ fontWeight: 700, marginBottom: 4 }}>怎么玩</div>
-          <ul style={{ margin: "4px 0 8px", paddingLeft: 18 }}>
-            <li><b>目标</b>：抢占并控制中央<b>控制点</b>（金色六角），或歼灭对方。</li>
-            <li><b>▶ 自动推进</b>：双方由内置 AI 指挥，一步步打到分出胜负。</li>
-            <li><b>前进</b>：手动推进一个决策节拍（{stepRef.current}s，实时制·先到先裁）。</li>
-            <li><b>视角</b>：全局看全场；红/蓝迷雾只显示该方按通视规则真正看得到的敌军。</li>
-            <li><b>↻ 新对局</b>：换随机种子重开一局（同种子必复现）。</li>
-          </ul>
+          {mode === "watch" ? (
+            <ul style={{ margin: "4px 0 8px", paddingLeft: 18 }}>
+              <li><b>▶ 自动推进</b>：红蓝双方均由内置 AI 指挥，一步步打到分出胜负。</li>
+              <li><b>前进</b>：手动推进一个决策节拍（{stepRef.current}s）。</li>
+              <li>想自己上手？切到 <b>🎮 我指挥红方</b>。</li>
+            </ul>
+          ) : (
+            <ul style={{ margin: "4px 0 8px", paddingLeft: 18 }}>
+              <li>① <b>点你的单位</b>（红圈）选中（高亮黄框）。</li>
+              <li>② <b>点空格</b>=命令前往；<b>点敌军</b>=命令攻击（会自动停下开火）。</li>
+              <li>③ <b>点「前进」</b>执行一拍；命令会持续生效，直到你改令。</li>
+              <li>⚠️ 不下令的单位会原地挨打——主动出击或抢控制点！</li>
+            </ul>
+          )}
+          <div><b>目标</b>：抢占并控制中央<b>控制点</b>（金色六角），或歼灭对方。</div>
           <div style={{ fontWeight: 700, margin: "8px 0 4px" }}>图例</div>
           <div>🟥/🟦 圈 = 红/蓝单位（图标为兵种，括号内为班·车数）</div>
-          <div>金色六角 = 控制点（其描边颜色 = 当前控方）</div>
+          <div>金色六角 = 控制点（描边色 = 当前控方）· 黄框 = 你选中的单位</div>
           <div>底色六角 = 地形（开阔/丛林/城镇/河流…）</div>
         </div>
       </aside>

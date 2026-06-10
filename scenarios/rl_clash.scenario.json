@@ -1,0 +1,28 @@
+{
+  "format": "openstratcore.scenario",
+  "version": 1,
+  "name": "Clash — combined-arms duel for the hill",
+  "map": "demo_valley.map.json",
+  "rules": "rules.default.json",
+  "timeLimitSeconds": 900,
+  "sides": {
+    "red": {
+      "name": "Red",
+      "units": [
+        { "id": "R-1", "type": "tank", "armor": "composite", "teams": 4, "at": { "q": 0, "r": 1 }, "facing": 2, "state": "stopped" },
+        { "id": "R-2", "type": "infantry", "armor": "none", "teams": 3, "at": { "q": 0, "r": 0 }, "facing": 2, "state": "normal" }
+      ]
+    },
+    "blue": {
+      "name": "Blue",
+      "units": [
+        { "id": "B-1", "type": "tank", "armor": "medium", "teams": 3, "at": { "q": 4, "r": 1 }, "facing": 4, "state": "stopped" },
+        { "id": "B-2", "type": "infantry", "armor": "none", "teams": 3, "at": { "q": 4, "r": 2 }, "facing": 4, "state": "normal" }
+      ]
+    }
+  },
+  "objectives": [
+    { "id": "CP1", "at": { "q": 2, "r": 1 }, "owner": "neutral", "priority": "primary" }
+  ],
+  "victory": { "mode": "capture_all" }
+}

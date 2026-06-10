@@ -9,6 +9,20 @@ export function axialToPixel(q: number, r: number, size: number): { x: number; y
   return { x, y };
 }
 
+/** Inverse of axialToPixel: a stage-local pixel -> the (rounded) axial hex under it (for click input). */
+export function pixelToAxial(x: number, y: number, size: number): { q: number; r: number } {
+  const r = y / (1.5 * size);
+  const q = x / (SQRT3 * size) - r / 2;
+  // cube rounding
+  let cx = q, cz = r, cy = -cx - cz;
+  let rx = Math.round(cx), ry = Math.round(cy), rz = Math.round(cz);
+  const dx = Math.abs(rx - cx), dy = Math.abs(ry - cy), dz = Math.abs(rz - cz);
+  if (dx > dy && dx > dz) rx = -ry - rz;
+  else if (dy > dz) ry = -rx - rz;
+  else rz = -rx - ry;
+  return { q: rx, r: rz };
+}
+
 const TERRAIN_COLOR: Record<string, number> = {
   open: 0xcdbf94, forest: 0x4f7a4a, urban: 0x9aa0a6, river: 0x3f6fa3,
   lake: 0x2f5a8f, soft: 0xb08a55, road: 0xd8d2c2, rail: 0x8a8f96,
@@ -120,6 +134,14 @@ export class HexRenderer {
       minY = Math.min(minY, y); maxY = Math.max(maxY, y);
     }
     return { x: (w - (maxX + minX)) / 2, y: (h - (maxY + minY)) / 2 };
+  }
+
+  /** Bright outline marking the player's currently-selected unit's hex (draw before the units). */
+  drawSelection(at: { q: number; r: number }): void {
+    const { x, y } = axialToPixel(at.q, at.r, this.size);
+    const g = new Graphics();
+    g.poly(hexPolygon(x, y, this.size * 0.98)).stroke({ color: 0xffe066, width: 3 });
+    this.app.stage.addChild(g);
   }
 
   /** Clear everything so a frame can be re-rendered (replay scrubbing). Textures stay cached. */
