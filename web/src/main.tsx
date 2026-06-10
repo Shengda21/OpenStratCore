@@ -12,7 +12,7 @@ import "./styles.css";
 type View = "play" | "replay" | "editor";
 
 function App() {
-  const [view, setView] = useState<View>("editor");
+  const [view, setView] = useState<View>("play");
   return (
     <div className="app">
       <header className="topbar">

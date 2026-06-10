@@ -71,25 +71,55 @@ export class HexRenderer {
   }
 
   drawMap(map: GameMap): void {
+    // Terrain is drawn as crisp colored hex polygons (the hex_* art sprites carry an opaque neutral
+    // background — `transparent:false` — so tiling them as quads bleeds at the corners). Flat color
+    // tiles perfectly and reads as a clean tactical map; unit/objective art still use sprites.
     for (const h of map.hexes) {
       const { x, y } = axialToPixel(h.q, h.r, this.size);
-      const t = this.tex.get(`hex_${h.terrain}`);
-      if (t) {
-        const sp = new Sprite(t);
-        sp.anchor.set(0.5);
-        sp.x = x;
-        sp.y = y;
-        sp.width = sp.height = this.size * 2; // a hex sprite covers its cell
-        this.app.stage.addChild(sp);
-        continue;
-      }
       const g = new Graphics();
-      const pts = hexPolygon(x, y, this.size);
       const base = TERRAIN_COLOR[h.terrain] ?? 0x808080;
       const shade = Math.max(0, Math.min(40, h.elevation * 6));
-      g.poly(pts).fill({ color: darken(base, shade) }).stroke({ color: 0x10141a, width: 1 });
+      g.poly(hexPolygon(x, y, this.size)).fill({ color: darken(base, shade) }).stroke({ color: 0x10141a, width: 1 });
       this.app.stage.addChild(g);
     }
+  }
+
+  /** Mark an objective (control point) hex: the control_point sprite if loaded, else a star, plus a
+   *  thick hex outline tinted by the current owner (neutral = amber, red/blue = side colour). Draw it
+   *  AFTER the terrain and BEFORE the units so occupying units sit on top. */
+  drawObjective(at: { q: number; r: number }, owner: string | null): void {
+    const { x, y } = axialToPixel(at.q, at.r, this.size);
+    const color = owner === "red" ? SIDE_COLOR.red : owner === "blue" ? SIDE_COLOR.blue : 0xe2b53e;
+    const ring = new Graphics();
+    ring.poly(hexPolygon(x, y, this.size * 0.94)).stroke({ color, width: 3 });
+    this.app.stage.addChild(ring);
+    const t = this.tex.get("control_point");
+    if (t) {
+      const sp = new Sprite(t);
+      sp.anchor.set(0.5);
+      sp.x = x;
+      sp.y = y;
+      sp.alpha = 0.85;
+      sp.width = sp.height = this.size * 1.0;
+      this.app.stage.addChild(sp);
+    } else {
+      const star = new Graphics();
+      star.star(x, y, 5, this.size * 0.5, this.size * 0.22).fill({ color, alpha: 0.8 });
+      this.app.stage.addChild(star);
+    }
+  }
+
+  /** Center a given map's hex footprint inside a canvas of (w,h): returns the stage offset to apply
+   *  via app.stage.position so the board sits centered rather than crammed in a corner. */
+  centerOffset(hexes: { q: number; r: number }[], w: number, h: number): { x: number; y: number } {
+    if (!hexes.length) return { x: w / 2, y: h / 2 };
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const hx of hexes) {
+      const { x, y } = axialToPixel(hx.q, hx.r, this.size);
+      minX = Math.min(minX, x); maxX = Math.max(maxX, x);
+      minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+    }
+    return { x: (w - (maxX + minX)) / 2, y: (h - (maxY + minY)) / 2 };
   }
 
   /** Clear everything so a frame can be re-rendered (replay scrubbing). Textures stay cached. */
