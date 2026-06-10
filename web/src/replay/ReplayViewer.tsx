@@ -56,6 +56,8 @@ export function ReplayViewer() {
       appRef.current = app;
       rendererRef.current = new HexRenderer(app, 26);
       hostRef.current?.appendChild(app.canvas);
+      await rendererRef.current.loadSprites(); // best-effort art pack; geometry fallback if absent
+      if (disposed) { app.destroy(true); return; }
       setReady(true);
     })();
     return () => {
