@@ -208,11 +208,13 @@ export function PlayView() {
     return { op: "move_to", unitId: u.id, target: { q: tq, r: tr } };
   }
 
-  function stepOnce() {
+  // One 5s decision tick: submit orders (AI for watch / AI-controlled side, standing orders for the
+  // player's side) and step. No render — callers redraw once they've advanced as far as they want.
+  function tickOnce() {
     const eng = engineRef.current; if (!eng) return;
     if (computeStatus().winner) return;
     const t = eng.clockSeconds();
-    const submit = (side: Side, cmd: object | null) => { if (cmd) { try { eng.submit(side, JSON.stringify(cmd), t); } catch { /* illegal = no-op */ } } };
+    const submit = (side: Side, cmd: object | null) => { if (cmd) { try { eng.submit(side, JSON.stringify(cmd), t); } catch { /* illegal / mid-transition = no-op */ } } };
     if (modeRef.current === "watch") {
       for (const side of ["red", "blue"] as Side[]) {
         const o = JSON.parse(eng.observe(side)) as { ownUnits?: ObsUnit[]; enemyUnits?: ObsUnit[] };
@@ -226,6 +228,16 @@ export function PlayView() {
       for (const u of oa.ownUnits ?? []) submit(ai, aiCmd(u, oa.enemyUnits ?? [], t));
     }
     eng.step(stepRef.current);
+  }
+
+  // 前进: advance until something VISIBLE changes (a unit moves a hex, takes losses, or the match ends).
+  // A single 5s tick is mid-move (a hex takes ~3-4 ticks), so one tick looks frozen; this guarantees
+  // each click shows progress.
+  function advance() {
+    const eng = engineRef.current; if (!eng || computeStatus().winner) return;
+    const fingerprint = () => JSON.stringify(snapUnits().map((u) => [u.id, u.pos.q, u.pos.r, u.teams, u.alive]));
+    const before = fingerprint();
+    for (let i = 0; i < 12; i++) { tickOnce(); if (fingerprint() !== before || computeStatus().winner) break; }
     render();
   }
 
@@ -250,9 +262,9 @@ export function PlayView() {
   }
 
   useEffect(() => {
-    if (mode !== "watch" || !auto || !hasEngine) return;
+    if (!auto || !hasEngine) return;
     if (status.winner) { setAuto(false); return; }
-    const h = setInterval(stepOnce, 900);
+    const h = setInterval(() => { tickOnce(); render(); }, 700);
     return () => clearInterval(h);
   }, [auto, hasEngine, status.winner, mode]);
 
@@ -279,8 +291,8 @@ export function PlayView() {
         </div>
         <div ref={hostRef} style={{ width: CANVAS_W, height: CANVAS_H, border: "1px solid #243042", borderRadius: 6, cursor: mode === "human" ? "pointer" : "default" }} />
         <div style={{ marginTop: 10, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          <button onClick={stepOnce} disabled={!hasEngine || !!status.winner}>前进 {stepRef.current}s</button>
-          {mode === "watch" && <button onClick={() => setAuto((a) => !a)} disabled={!hasEngine || !!status.winner}>{auto ? "⏸ 暂停" : "▶ 自动推进"}</button>}
+          <button onClick={advance} disabled={!hasEngine || !!status.winner || auto}>前进 ▸</button>
+          <button onClick={() => setAuto((a) => !a)} disabled={!hasEngine || !!status.winner}>{auto ? "⏸ 暂停" : "▶ 自动推进"}</button>
           <button onClick={newMatch} disabled={!hasEngine}>↻ 新对局</button>
           <span style={{ marginLeft: 8, opacity: 0.8 }}>视角：</span>
           <button onClick={() => setView("all")} aria-pressed={view === "all"} disabled={!hasEngine}>全局</button>
@@ -304,15 +316,15 @@ export function PlayView() {
           <div style={{ fontWeight: 700, marginBottom: 4 }}>怎么玩</div>
           {mode === "watch" ? (
             <ul style={{ margin: "4px 0 8px", paddingLeft: 18 }}>
-              <li><b>▶ 自动推进</b>：红蓝双方均由内置 AI 指挥，一步步打到分出胜负。</li>
-              <li><b>前进</b>：手动推进一个决策节拍（{stepRef.current}s）。</li>
+              <li><b>▶ 自动推进</b>：红蓝双方均由内置 AI 指挥，自动打到分出胜负。</li>
+              <li><b>前进 ▸</b>：手动推进到下一步可见变化（移动一格需若干秒，会自动跳到位）。</li>
               <li>想自己上手？切到 <b>🎮 我指挥红方</b>。</li>
             </ul>
           ) : (
             <ul style={{ margin: "4px 0 8px", paddingLeft: 18 }}>
               <li>① <b>点你的单位</b>（红圈）选中（高亮黄框）。</li>
               <li>② <b>点空格</b>=命令前往；<b>点敌军</b>=命令攻击（会自动停下开火）。</li>
-              <li>③ <b>点「前进」</b>执行一拍；命令会持续生效，直到你改令。</li>
+              <li>③ <b>点「前进 ▸」</b>推进到下一步动作，或 <b>▶ 自动推进</b> 让命令自动执行；命令持续生效，直到你改令。</li>
               <li>⚠️ 不下令的单位会原地挨打——主动出击或抢控制点！</li>
             </ul>
           )}
