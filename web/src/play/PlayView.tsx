@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Application, Rectangle } from "pixi.js";
 import { HexRenderer, pixelToAxial, type SnapUnit } from "../render/HexRenderer";
 import { initEngine, Engine } from "../engine";
+import { loadSettings, type AppSettings } from "../settings";
+import { llmDecide } from "../llm";
 
 // A live match on the built-in combined-arms scenario — the SAME deterministic Rust kernel runs in the
 // browser via wasm. Two modes: 观战 (both sides driven by a small in-browser scripted commander) and
@@ -13,6 +15,13 @@ const CANVAS_H = 460;
 const HEX = 36;
 const FIRE_HEXES = 3; // close enough to stop & engage instead of advancing
 const HUMAN: Side = "red"; // the side you command in 我指挥 mode
+const SYSTEM_PROMPT =
+  "You are a tactical wargame commander in a real-time hex-grid land battle. Each tick you get a " +
+  "fog-of-war observation (your units, visible enemies, the objective). Reply by calling the " +
+  "submit_orders tool with an `actions` array. Ops: move_to {unitId,target:{q,r}}, " +
+  "fire_direct {unitId,weapon,targetUnit}, stop {unitId}, capture {unitId}. A ground unit must be " +
+  "stopped before it can fire. Win by holding the central control point or eliminating the enemy. " +
+  "Be decisive: advance on the objective and concentrate fire. Output ONLY the tool call.";
 
 type Side = "red" | "blue";
 type ViewMode = "all" | Side;
@@ -48,6 +57,12 @@ export function PlayView() {
   const selectedRef = useRef<string | null>(null);
   const ordersRef = useRef<Record<string, Order>>({});
   const renderRef = useRef<() => void>(() => {});
+  const seedRef = useRef(1);
+  const recordRef = useRef<{ commands: { t: number; side: Side; command: object }[]; snapshots: { t: number; state: unknown }[] }>({ commands: [], snapshots: [] });
+  const tickCountRef = useRef(0);
+  const savedRef = useRef(false);
+  const schemaRef = useRef<object | null>(null);
+  const metaRef = useRef<{ redName: string; blueName: string; mapFile: string; scenarioFile: string; rulesFile: string } | null>(null);
 
   const [ready, setReady] = useState(false);
   const [hasEngine, setHasEngine] = useState(false);
@@ -57,6 +72,7 @@ export function PlayView() {
   const [hint, setHint] = useState<string>("");
   const [status, setStatus] = useState<Status>(ZERO);
   const [error, setError] = useState<string | null>(null);
+  const [llmNote, setLlmNote] = useState<string | null>(null);
 
   // Mount the PIXI canvas + renderer once; make the board clickable for 我指挥 mode.
   useEffect(() => {
@@ -79,10 +95,19 @@ export function PlayView() {
     return () => { disposed = true; if (app) app.destroy(true); appRef.current = null; rendererRef.current = null; };
   }, []);
 
+  function resetRecord() {
+    recordRef.current = { commands: [], snapshots: [] };
+    tickCountRef.current = 0; savedRef.current = false;
+    const eng = engineRef.current;
+    if (eng) recordRef.current.snapshots.push({ t: eng.clockSeconds(), state: JSON.parse(eng.snapshot()) });
+  }
+
   async function buildEngine(seed: number) {
     const cfg = cfgRef.current; if (!cfg) return;
-    ordersRef.current = {}; selectedRef.current = null; setHint("");
+    ordersRef.current = {}; selectedRef.current = null; setHint(""); setLlmNote(null);
+    seedRef.current = seed;
     engineRef.current = new Engine(cfg.map, cfg.scenario, cfg.rules, seed);
+    resetRecord();
     render();
   }
 
@@ -94,23 +119,33 @@ export function PlayView() {
       try {
         const scenarioJson = await fetch(SCENARIO_URL).then((r) => { if (!r.ok) throw new Error(`${r.status} ${SCENARIO_URL}`); return r.text(); });
         const scenario = JSON.parse(scenarioJson) as { map: string; rules?: string; objectives?: { id: string; at: { q: number; r: number } }[] };
-        const [mapJson, rulesJson] = await Promise.all([
+        const [mapJson, rulesJson, llmSchema] = await Promise.all([
           fetch(`/scenarios/maps/${scenario.map}`).then((r) => r.text()),
           fetch(`/config/${scenario.rules ?? "rules.default.json"}`).then((r) => r.text()),
+          fetch(`/schemas/llm_tools.schema.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null),
         ]);
         await initEngine();
         if (cancelled) return;
         const map = JSON.parse(mapJson) as GameMap;
         const rules = JSON.parse(rulesJson) as { timing?: { decision_tick_seconds?: number }; loadout?: Record<string, string[]> };
+        const scn = JSON.parse(scenarioJson) as { sides?: { red?: { name?: string }; blue?: { name?: string } } };
         mapRef.current = map;
         loadoutRef.current = rules.loadout ?? {};
         stepRef.current = rules.timing?.decision_tick_seconds ?? 5;
+        schemaRef.current = (llmSchema as { $defs?: { actionList?: object } } | null)?.$defs?.actionList ?? null;
+        metaRef.current = {
+          redName: scn.sides?.red?.name ?? "Red", blueName: scn.sides?.blue?.name ?? "Blue",
+          mapFile: scenario.map, scenarioFile: SCENARIO_URL.split("/").pop() ?? "scenario.json",
+          rulesFile: scenario.rules ?? "rules.default.json",
+        };
         const obj = scenario.objectives?.[0];
         objRef.current = obj ? { id: obj.id, q: obj.at.q, r: obj.at.r } : null;
         cfgRef.current = { map: mapJson, scenario: scenarioJson, rules: rulesJson };
         const off = rendererRef.current!.centerOffset(map.hexes, CANVAS_W, CANVAS_H);
         appRef.current!.stage.position.set(off.x, off.y);
+        seedRef.current = 1;
         engineRef.current = new Engine(mapJson, scenarioJson, rulesJson, 1);
+        resetRecord();
         setHasEngine(true);
         render();
       } catch (e) { setError(`引擎初始化失败: ${(e as Error).message}`); }
@@ -208,36 +243,55 @@ export function PlayView() {
     return { op: "move_to", unitId: u.id, target: { q: tq, r: tr } };
   }
 
-  // One 5s decision tick: submit orders (AI for watch / AI-controlled side, standing orders for the
-  // player's side) and step. No render — callers redraw once they've advanced as far as they want.
-  function tickOnce() {
+  // Who drives a side this tick: the human (in 我指挥, the HUMAN side), a configured LLM, or the
+  // built-in scripted AI. The human side always wins a tie with the LLM config.
+  function controllerFor(side: Side, s: AppSettings): "human" | "ai" | "llm" {
+    if (modeRef.current === "human" && side === HUMAN) return "human";
+    if (s.llm.enabled && s.llm.side === side) return "llm";
+    return "ai";
+  }
+
+  // One 5s decision tick. May await an LLM call for an LLM-controlled side. No render — callers redraw.
+  async function tickOnce() {
     const eng = engineRef.current; if (!eng) return;
     if (computeStatus().winner) return;
+    const s = loadSettings();
     const t = eng.clockSeconds();
-    const submit = (side: Side, cmd: object | null) => { if (cmd) { try { eng.submit(side, JSON.stringify(cmd), t); } catch { /* illegal / mid-transition = no-op */ } } };
-    if (modeRef.current === "watch") {
-      for (const side of ["red", "blue"] as Side[]) {
-        const o = JSON.parse(eng.observe(side)) as { ownUnits?: ObsUnit[]; enemyUnits?: ObsUnit[] };
+    const submit = (side: Side, cmd: object | null) => {
+      if (!cmd) return;
+      try { eng.submit(side, JSON.stringify(cmd), t); recordRef.current.commands.push({ t, side, command: cmd }); }
+      catch { /* illegal / mid-transition = no-op (not recorded) */ }
+    };
+    for (const side of ["red", "blue"] as Side[]) {
+      const ctrl = controllerFor(side, s);
+      const o = JSON.parse(eng.observe(side)) as { ownUnits?: ObsUnit[]; enemyUnits?: ObsUnit[] };
+      if (ctrl === "human") {
+        for (const u of o.ownUnits ?? []) { const ord = ordersRef.current[u.id]; if (ord) submit(side, humanCmd(u, ord, o.enemyUnits ?? [], t)); }
+      } else if (ctrl === "llm" && schemaRef.current) {
+        try {
+          const { actions } = await llmDecide(s.llm, side, o, schemaRef.current, SYSTEM_PROMPT);
+          for (const a of actions) submit(side, a as object);
+          setLlmNote(null);
+        } catch (e) {
+          setLlmNote(`LLM(${side}) 调用失败，本拍回退脚本 AI：${(e as Error).message}`);
+          for (const u of o.ownUnits ?? []) submit(side, aiCmd(u, o.enemyUnits ?? [], t));
+        }
+      } else {
         for (const u of o.ownUnits ?? []) submit(side, aiCmd(u, o.enemyUnits ?? [], t));
       }
-    } else {
-      const oh = JSON.parse(eng.observe(HUMAN)) as { ownUnits?: ObsUnit[]; enemyUnits?: ObsUnit[] };
-      for (const u of oh.ownUnits ?? []) { const ord = ordersRef.current[u.id]; if (ord) submit(HUMAN, humanCmd(u, ord, oh.enemyUnits ?? [], t)); }
-      const ai: Side = HUMAN === "red" ? "blue" : "red";
-      const oa = JSON.parse(eng.observe(ai)) as { ownUnits?: ObsUnit[]; enemyUnits?: ObsUnit[] };
-      for (const u of oa.ownUnits ?? []) submit(ai, aiCmd(u, oa.enemyUnits ?? [], t));
     }
     eng.step(stepRef.current);
+    if (++tickCountRef.current % 4 === 0) recordRef.current.snapshots.push({ t: eng.clockSeconds(), state: JSON.parse(eng.snapshot()) });
   }
 
   // 前进: advance until something VISIBLE changes (a unit moves a hex, takes losses, or the match ends).
   // A single 5s tick is mid-move (a hex takes ~3-4 ticks), so one tick looks frozen; this guarantees
   // each click shows progress.
-  function advance() {
+  async function advance() {
     const eng = engineRef.current; if (!eng || computeStatus().winner) return;
     const fingerprint = () => JSON.stringify(snapUnits().map((u) => [u.id, u.pos.q, u.pos.r, u.teams, u.alive]));
     const before = fingerprint();
-    for (let i = 0; i < 12; i++) { tickOnce(); if (fingerprint() !== before || computeStatus().winner) break; }
+    for (let i = 0; i < 12; i++) { await tickOnce(); if (fingerprint() !== before || computeStatus().winner) break; }
     render();
   }
 
@@ -264,11 +318,49 @@ export function PlayView() {
   useEffect(() => {
     if (!auto || !hasEngine) return;
     if (status.winner) { setAuto(false); return; }
-    const h = setInterval(() => { tickOnce(); render(); }, 700);
-    return () => clearInterval(h);
+    let busy = false, stopped = false;
+    const h = setInterval(async () => {
+      if (busy || stopped) return;            // skip if the previous tick (e.g. a slow LLM call) is still running
+      busy = true;
+      try { await tickOnce(); render(); } finally { busy = false; }
+    }, 700);
+    return () => { stopped = true; clearInterval(h); };
   }, [auto, hasEngine, status.winner, mode]);
 
   useEffect(() => { if (hasEngine) render(); /* eslint-disable-next-line */ }, [view]);
+
+  // Build a schema-valid replay (header + command stream + periodic snapshots) and download it. The
+  // Replay tab can load it back and scrub through the snapshots.
+  function downloadReplay() {
+    const eng = engineRef.current, meta = metaRef.current; if (!eng || !meta) return;
+    const st = computeStatus();
+    const rep = {
+      header: {
+        format: "openstratcore.replay", version: 1,
+        redName: meta.redName, blueName: meta.blueName,
+        mapFile: meta.mapFile, scenarioFile: meta.scenarioFile, rulesFile: meta.rulesFile,
+        seed: seedRef.current, durationSeconds: eng.clockSeconds(),
+        ...(st.winner === "red" || st.winner === "blue" ? { result: { winner: st.winner, reason: st.owner ? "capture" : "elimination" } } : {}),
+      },
+      commands: recordRef.current.commands,
+      snapshots: recordRef.current.snapshots,
+    };
+    const blob = new Blob([JSON.stringify(rep, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `match-${seedRef.current}-${Math.round(eng.clockSeconds())}s.replay.json`;
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  }
+
+  // Auto-save a replay once a match ends (if enabled in Settings).
+  useEffect(() => {
+    if (status.winner && !savedRef.current) {
+      savedRef.current = true;
+      const eng = engineRef.current;
+      if (eng) recordRef.current.snapshots.push({ t: eng.clockSeconds(), state: JSON.parse(eng.snapshot()) });
+      if (loadSettings().autoSaveReplay) downloadReplay();
+    }
+  }, [status.winner]);
 
   function switchMode(m: Mode) {
     modeRef.current = m; setMode(m); setAuto(false);
@@ -294,11 +386,13 @@ export function PlayView() {
           <button onClick={advance} disabled={!hasEngine || !!status.winner || auto}>前进 ▸</button>
           <button onClick={() => setAuto((a) => !a)} disabled={!hasEngine || !!status.winner}>{auto ? "⏸ 暂停" : "▶ 自动推进"}</button>
           <button onClick={newMatch} disabled={!hasEngine}>↻ 新对局</button>
+          <button onClick={downloadReplay} disabled={!hasEngine} title="下载本局复盘 .replay.json（可在「复盘」标签载入）">💾 保存复盘</button>
           <span style={{ marginLeft: 8, opacity: 0.8 }}>视角：</span>
           <button onClick={() => setView("all")} aria-pressed={view === "all"} disabled={!hasEngine}>全局</button>
           <button onClick={() => setView("red")} aria-pressed={view === "red"} disabled={!hasEngine}>红方迷雾</button>
           <button onClick={() => setView("blue")} aria-pressed={view === "blue"} disabled={!hasEngine}>蓝方迷雾</button>
         </div>
+        {llmNote && <div style={{ marginTop: 8, color: "#ffb86b" }}>{llmNote}</div>}
         {mode === "human" && <div style={{ marginTop: 8, minHeight: 20, color: "#ffe066" }}>{hint || "点你的单位（红圈）选中，再点格子下令；点「前进」执行一拍。"}</div>}
       </div>
 
